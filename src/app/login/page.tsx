@@ -2,23 +2,77 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleSignupSubmit = (e: React.FormEvent) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+  
+    try {
+      const res = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        alert("Login successful!");
+        router.push("/dashboard"); // เปลี่ยนไปหน้า Dashboard
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to connect to server");
+    }
+  };
+  
+  
+
+  const handleSignupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match!");
       return;
     }
+
     setPasswordError("");
-    console.log("Signing up with:", { password });
+
+    try {
+      const res = await fetch("http://localhost:5000/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Signup successful! Please log in.");
+        setIsLogin(true); // เปลี่ยนไปหน้า Login
+      } else {
+        alert("Error: " + data.error);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to connect to server");
+    }
   };
 
   return (
@@ -64,7 +118,7 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-center text-white mb-4">
               Log in
             </h2>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleLogin}>
               <div>
                 <label className="block text-sm font-medium text-gray-300">
                   Email
@@ -94,7 +148,7 @@ export default function AuthPage() {
                   </button>
                 </div>
               </div>
-              <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+              <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
                 Log in
               </button>
             </form>
@@ -118,9 +172,12 @@ export default function AuthPage() {
                     First Name
                   </label>
                   <input
-                    type="text"
-                    className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
+                   type="text"
+                   value={firstName}
+                   onChange={(e) => setFirstName(e.target.value)}
+                   placeholder="First Name"
+                   className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   required
                   />
                 </div>
                 <div>
@@ -129,6 +186,9 @@ export default function AuthPage() {
                   </label>
                   <input
                     type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Last Name"
                     className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -139,7 +199,10 @@ export default function AuthPage() {
                   Email
                 </label>
                 <input
-                  type="email"
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
                   className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
@@ -182,9 +245,7 @@ export default function AuthPage() {
                   <button
                     type="button"
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    onClick={() =>
-                      setShowConfirmPassword(!showConfirmPassword)
-                    }
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? "🙈 Hide" : "👁 Show"}
                   </button>
