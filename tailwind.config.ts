@@ -9,6 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        darkPurple: "#0B091A",
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
