@@ -1,14 +1,5 @@
 {
   "/page": "app/page.js",
-  "/chart/page": "app/chart/page.js",
-  "/asset/page": "app/asset/page.js",
-  "/finance/page": "app/finance/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
   "/login/page": "app/login/page.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/finance/loggedin/page": "app/finance/loggedin/page.js",
-  "/finance/deposit-amount/page": "app/finance/deposit-amount/page.js",
-  "/finance/deposit/page": "app/finance/deposit/page.js",
-  "/asset/loggedin/page": "app/asset/loggedin/page.js",
-  "/dashboard/loggedin/page": "app/dashboard/loggedin/page.js"
+  "/dashboard/page": "app/dashboard/page.js"
 }
