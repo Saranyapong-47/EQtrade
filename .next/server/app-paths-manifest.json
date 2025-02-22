@@ -1,0 +1,10 @@
+{
+  "/page": "app/page.js",
+  "/finance/page": "app/finance/page.js",
+  "/finance/deposit/page": "app/finance/deposit/page.js",
+  "/dashboard/loggedin/page": "app/dashboard/loggedin/page.js",
+  "/chart/loggedin/page": "app/chart/loggedin/page.js",
+  "/asset/loggedin/page": "app/asset/loggedin/page.js",
+  "/finance/loggedin/page": "app/finance/loggedin/page.js",
+  "/finance/deposit-amount/page": "app/finance/deposit-amount/page.js"
+}
