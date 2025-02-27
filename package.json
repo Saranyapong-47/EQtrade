@@ -10,15 +10,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-<<<<<<< HEAD
+
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-=======
     "chart.js": "^4.4.8",
     "dotenv": "^16.4.7",
->>>>>>> 86e96b2d3a9d17dbd974e0d445fca18ba4b332b8
+
     "framer-motion": "^12.4.7",
     "mongoose": "^8.10.1",
     "next": "15.1.7",
