@@ -12,13 +12,6 @@ export default function ChartLoggedIn() {
   const [activeTab, setActiveTab] = useState("chart");
   const [isBuying, setIsBuying] = useState(true);
 
-  // ข้อมูลธุรกรรม (ข้อมูลที่ขาดหายไป)
-  const transactions = [
-    { id: 1, icon: 'btc', amount: "0.00054 BTC", name: "Bitcoin", timeAgo: "2 mins ago" },
-    { id: 2, icon: 'eth-red', amount: "0.12 ETH", name: "Ethereum", timeAgo: "5 mins ago" },
-    { id: 3, icon: 'eth', amount: "0.06 ETH", name: "Ethereum", timeAgo: "10 mins ago" }
-  ];
-
   const handleNavigation = (tab: string, path: string) => {
     setActiveTab(tab);
     router.push(path);
@@ -167,39 +160,6 @@ export default function ChartLoggedIn() {
                 <button className="px-3 py-1 rounded-lg bg-gray-800 text-white">1Y</button>
               </div>
             </div>
-
-            {/* Transactions Section */}
-            <div className="bg-[#4A3F75] rounded-3xl p-6">
-              <div className="grid grid-cols-3 gap-4">
-                {transactions.map((tx) => (
-                  <div key={tx.id} className="bg-gray-800/70 rounded-xl p-4 flex items-start justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        tx.icon === 'btc' ? 'bg-orange-500' : 
-                        tx.icon === 'eth-red' ? 'bg-red-500' : 'bg-purple-500'
-                      }`}>
-                        {tx.icon === 'btc' && <span className="text-sm font-bold">₿</span>}
-                        {tx.icon === 'eth-red' && <span className="text-sm font-bold">Ξ</span>}
-                        {tx.icon === 'eth' && <span className="text-sm font-bold">Ξ</span>}
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-300">{tx.amount}</p>
-                        <p className="text-md">{tx.name}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <button className="border border-gray-600 text-gray-300 px-3 py-1 rounded-lg text-sm mb-2">
-                        Details
-                      </button>
-                      <div className="flex items-center text-xs text-gray-400">
-                        <FaClock className="mr-1" size={10} />
-                        <span>{tx.timeAgo}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Sidebar ขวา */}
@@ -314,6 +274,44 @@ export default function ChartLoggedIn() {
                 Exchange Now
               </button>
             </div>
+          </div>
+        </div>
+   
+{/*Bottom Tab */}
+<div className="mt-1 bg-[#4A3F75] rounded-3xl p-6">
+          <div className="grid grid-cols-3 gap-4">
+            {/* ข้อมูลธุรกรรม */}
+            {[
+              { id: 1, icon: 'btc', amount: "0.00054 BTC", name: "Bitcoin", timeAgo: "2 mins ago" },
+              { id: 2, icon: 'eth-red', amount: "0.12 ETH", name: "Ethereum", timeAgo: "5 mins ago" },
+              { id: 3, icon: 'eth', amount: "0.06 ETH", name: "Ethereum", timeAgo: "10 mins ago" }
+            ].map((tx) => (
+              <div key={tx.id} className="bg-gray-800/70 rounded-xl p-4 flex items-start justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    tx.icon === 'btc' ? 'bg-orange-500' : 
+                    tx.icon === 'eth-red' ? 'bg-red-500' : 'bg-purple-500'
+                  }`}>
+                    {tx.icon === 'btc' && <span className="text-sm font-bold">₿</span>}
+                    {tx.icon === 'eth-red' && <span className="text-sm font-bold">Ξ</span>}
+                    {tx.icon === 'eth' && <span className="text-sm font-bold">Ξ</span>}
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-300">{tx.amount}</p>
+                    <p className="text-md">{tx.name}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <button className="border border-gray-600 text-gray-300 px-3 py-1 rounded-lg text-sm mb-2">
+                    Details
+                  </button>
+                  <div className="flex items-center text-xs text-gray-400">
+                    <FaClock className="mr-1" size={10} />
+                    <span>{tx.timeAgo}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </main>
