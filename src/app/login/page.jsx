@@ -46,6 +46,7 @@ export default function AuthPage() {
       const {user} = await res_verify.json();
 
       if (user) {
+        setSuccess(""); 
         setError("Email already exists !");
         return;
       }
