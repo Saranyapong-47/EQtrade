@@ -2,76 +2,81 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { div } from "framer-motion/client";
+import { set } from "mongoose";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const router = useRouter();
+  const [success, setSuccess] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-  
-    try {
-      const res = await fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await res.json();
-  
-      if (res.ok) {
-        alert("Login successful!");
-        router.push("/dashboard"); // เปลี่ยนไปหน้า Dashboard
-      } else {
-        alert("Error: " + data.error);
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Failed to connect to server");
-    }
-  };
-  
-  
+  console.log(firstName, lastName, email, password, confirmPassword);
 
-  const handleSignupSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setPasswordError("Passwords do not match!");
+      setError("Password do not match !");
       return;
     }
 
-    setPasswordError("");
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      setError("Please fill in all fields !");
+      return;
+    }
 
     try {
-      const res = await fetch("http://localhost:5000/api/signup", {
+      const res_verify = await fetch("http://localhost:3000/api/verify", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({email}),
+      })
+
+      const {user} = await res_verify.json();
+
+      if (user) {
+        setError("Email already exists !");
+        return;
+      }
+
+      const res = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+        }),
       });
 
-      const data = await res.json();
-
       if (res.ok) {
-        alert("Signup successful! Please log in.");
-        setIsLogin(true); // เปลี่ยนไปหน้า Login
+        setError("");
+        setSuccess("Registration successful.");
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        
       } else {
-        alert("Error: " + data.error);
+        console.log("Error during registration failed.");
       }
     } catch (error) {
-      console.error(error);
-      alert("Failed to connect to server");
+      console.log("Error during registration", error);
     }
   };
 
@@ -82,7 +87,7 @@ export default function AuthPage() {
         <span className="text-3xl">EQ</span>
       </div>
 
-      {/* ปุ่มสลับ Login / Signup (ย้ายไปมุมขวาบน) */}
+      {/* ปุ่มสลับ Login / Signup (มุมขวาบน) */}
       <div className="absolute top-6 right-6">
         <div className="flex bg-gray-800 p-1 rounded-full">
           <button
@@ -118,7 +123,7 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-center text-white mb-4">
               Log in
             </h2>
-            <form className="space-y-4" onSubmit={handleLogin}>
+            <form className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300">
                   Email
@@ -148,7 +153,10 @@ export default function AuthPage() {
                   </button>
                 </div>
               </div>
-              <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+              >
                 Log in
               </button>
             </form>
@@ -165,19 +173,31 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-center text-white mb-4">
               Sign up
             </h2>
-            <form className="space-y-4" onSubmit={handleSignupSubmit}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {error && (
+                <div className="bg-red-500 text-white text-sm p-2 rounded-md text-center">
+                  {error}
+                </div>
+              )}
+
+              {success && (
+                <div className="bg-green-500 text-white text-sm p-2 rounded-md text-center">
+                  {success}
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     First Name
                   </label>
                   <input
-                   type="text"
-                   value={firstName}
-                   onChange={(e) => setFirstName(e.target.value)}
-                   placeholder="First Name"
-                   className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   required
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="First Name"
+                    className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
                   />
                 </div>
                 <div>
@@ -207,6 +227,7 @@ export default function AuthPage() {
                   required
                 />
               </div>
+
               {/* Password Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300">
@@ -217,6 +238,7 @@ export default function AuthPage() {
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Your password"
                     className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -229,6 +251,7 @@ export default function AuthPage() {
                   </button>
                 </div>
               </div>
+
               {/* Confirm Password Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-300">
@@ -239,6 +262,7 @@ export default function AuthPage() {
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm Your Password"
                     className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                   />
@@ -251,9 +275,7 @@ export default function AuthPage() {
                   </button>
                 </div>
               </div>
-              {passwordError && (
-                <p className="text-red-500 text-sm">{passwordError}</p>
-              )}
+
               <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
                 Create an Account
               </button>
