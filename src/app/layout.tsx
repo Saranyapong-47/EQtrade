@@ -1,3 +1,5 @@
+import { AuthProvider } from "./provider";
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
@@ -15,13 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Navigation Bar */}
-        <nav className="">
-          
-        </nav>
+        <AuthProvider>
+          {/* Navigation Bar */}
+          <nav className=""> </nav>
 
-        {/* Page Content */}
-        {children}
+          {/* Page Content */}
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
