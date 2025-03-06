@@ -1,91 +1,57 @@
 "use client";
+import Image from "next/image";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+import { Icon } from "react-icons-kit";
+import { eyeOff } from "react-icons-kit/feather/eyeOff";
+import { eye } from "react-icons-kit/feather/eye";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { div } from "framer-motion/client";
-import { set } from "mongoose";
 
 export default function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const router = useRouter();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const [success, setSuccess] = useState("");
-
-  console.log(firstName, lastName, email, password, confirmPassword);
-
-  const handleSubmit = async (e) => {
+  const handleSubmitSignin = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError("Password do not match !");
-      return;
-    }
-
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      setError("Please fill in all fields !");
-      return;
-    }
-
     try {
-      const res_verify = await fetch("http://localhost:3000/api/verify", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({email}),
-      })
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-      const {user} = await res_verify.json();
-
-      if (user) {
-        setSuccess(""); 
-        setError("Email already exists !");
+      if (res.error) {
+        setError("Invalid email or password !");
         return;
       }
 
-      const res = await fetch("http://localhost:3000/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-        }),
-      });
-
-      if (res.ok) {
-        setError("");
-        setSuccess("Registration successful.");
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        
-      } else {
-        console.log("Error during registration failed.");
-      }
+      router.replace("dashboard");
     } catch (error) {
-      console.log("Error during registration", error);
+      console.log(error);
     }
   };
 
+  const [isLogin, setIsLogin] = useState(true);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [type, setType] = useState("password");
+  const [icon, setIcon] = useState(eyeOff);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   return (
-    <div className="relative flex justify-center items-center h-screen bg-gradient-to-br from-black to-blue-900">
-      {/* Logo */}
-      <div className="absolute top-6 left-6 text-white text-lg font-bold">
-        <span className="text-3xl">EQ</span>
+    <div className="relative flex justify-center items-center h-screen  bg-bgcolor">
+      <div
+        className="absolute top-6 left-6 cursor-pointer"
+        onClick={() => router.push("/")}
+      >
+        <Image src="/logo.svg" alt="EQ" width={110} height={110} />
       </div>
 
       {/* ปุ่มสลับ Login / Signup (มุมขวาบน) */}
@@ -103,16 +69,16 @@ export default function AuthPage() {
             className={`w-24 py-2 rounded-full text-white font-semibold transition ${
               !isLogin ? "bg-gray-600" : "bg-transparent"
             }`}
-            onClick={() => setIsLogin(false)}
+            onClick={() => router.push("/signup")}
           >
             Signup
           </button>
         </div>
       </div>
 
-      {/* แอนิเมชัน Login และ Signup */}
+      {/* แอนิเมชัน Login */}
       <AnimatePresence mode="wait">
-        {isLogin ? (
+        {isLogin && (
           <motion.div
             key="login"
             initial={{ opacity: 0, x: -50 }}
@@ -124,12 +90,17 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-center text-white mb-4">
               Log in
             </h2>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmitSignin}>
+              <div className="bg-red-500 text-white text-sm p-2 rounded-md text-center">
+                {error}
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-300">
                   Email
                 </label>
                 <input
+                  onChange={(e) => setEmail(e.target.value)}
                   type="email"
                   className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
@@ -141,6 +112,7 @@ export default function AuthPage() {
                 </label>
                 <div className="relative">
                   <input
+                    onChange={(e) => setPassword(e.target.value)}
                     type={showPassword ? "text" : "password"}
                     className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
@@ -159,126 +131,6 @@ export default function AuthPage() {
                 className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
               >
                 Log in
-              </button>
-            </form>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="signup"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.5 }}
-            className="bg-gray-900 p-6 rounded-lg shadow-lg w-96"
-          >
-            <h2 className="text-2xl font-bold text-center text-white mb-4">
-              Sign up
-            </h2>
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              {error && (
-                <div className="bg-red-500 text-white text-sm p-2 rounded-md text-center">
-                  {error}
-                </div>
-              )}
-
-              {success && (
-                <div className="bg-green-500 text-white text-sm p-2 rounded-md text-center">
-                  {success}
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="First Name"
-                    className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Last Name"
-                    className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300">
-                  Email
-                </label>
-                <input
-                  type="text"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
-                  className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-
-              {/* Password Input */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300">
-                  Your password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Your password"
-                    className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? "🙈 Hide" : "👁 Show"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Confirm Password Input */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300">
-                  Confirm Your Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirm Your Password"
-                    className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? "🙈 Hide" : "👁 Show"}
-                  </button>
-                </div>
-              </div>
-
-              <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
-                Create an Account
               </button>
             </form>
           </motion.div>
