@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -19,11 +20,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@lib/*": ["./lib/*"],
-      "@models/*": ["./models/*"],
+      "@/*": ["*"],
+      "@app/": ["app/"],
+      "@lib/*": ["lib/*"],
+      "@models/*": ["models/*"],
+      "@context/*":["context/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/login/page.jsx", "src/app/layout.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/login/page.jsx", "src/app/layout.tsx", "src/app/api/auth/[...nextauth]/options.js"],
   "exclude": ["node_modules"]
 }

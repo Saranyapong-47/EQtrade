@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useUserAuth } from "../../context/UserAuthContext";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,6 +15,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { logIn } = useUserAuth();
 
   const router = useRouter();
 
@@ -25,29 +28,21 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (res.error) {
-        setError("Invalid Email or Password !");
-        return;
-      }
-
-      router.replace("dashboard");
+      await logIn(email, password);
+      router.push("/dashboard");
     } catch (error) {
       console.log(error);
+      setError("Email or Password Invalid!");
     }
   };
+
   return (
     <div className="relative flex justify-center items-center h-screen  bg-bgcolor">
       <div
         className="absolute top-6 left-6 cursor-pointer"
         onClick={() => router.push("/")}
       >
-        <Image src="/logo.svg" alt="EQ" width={110} height={110} />
+        <Image src="/logo.svg" alt="EQ" width={110} height={110} priority />
       </div>
 
       {/* ปุ่มสลับ Login / Signup (มุมขวาบน) */}
@@ -98,22 +93,22 @@ export default function LoginPage() {
                   Email
                 </label>
                 <input
+                  type="email"
                   onChange={(e) => setEmail(e.target.value)}
-                  type="text"
                   className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  //required
+                  required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 my-1">
-                  Your password
+                  Password
                 </label>
                 <div className="relative">
                   <input
-                    onChange={(e) => setPassword(e.target.value)}
                     type={showPassword ? "text" : "password"}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    //required
+                    required
                   />
                   <button
                     type="button"
