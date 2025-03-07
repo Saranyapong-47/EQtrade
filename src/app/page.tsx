@@ -10,5 +10,5 @@ export default function HomePage() {
     router.replace("/login"); // เมื่อโหลดหน้าแรก ให้เปลี่ยนไปที่ /login
   }, []);
 
-  return null; // ไม่ต้องแสดงอะไร
+  return null;
 }
