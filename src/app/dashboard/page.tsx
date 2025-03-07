@@ -4,10 +4,19 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaHome, FaChartLine, FaDollarSign, FaUniversity, FaSignInAlt } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("home");
+
+  const {data: session} = useSession();
+  console.log(session);
+
+
+
+
+
   
   // ผู้ใช้ยังไม่ได้ล็อกอิน: จะแสดงปุ่ม Login
   return (
