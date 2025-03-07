@@ -3,14 +3,13 @@ import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { eyeOff } from "react-icons-kit/feather/eyeOff";
+
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+
+import { useUserAuth } from "../../context/UserAuthContext";
 
 export default function SignupPage() {
   const [isLogin, setIsLogin] = useState(true);
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -20,8 +19,11 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const { signUp } = useUserAuth();
+
   const router = useRouter();
 
+  const [showPassword, setShowPassword] = useState(false);
   const handleToggle = () => {
     setShowPassword(!showPassword);
   };
@@ -39,7 +41,15 @@ export default function SignupPage() {
       return;
     }
 
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters");
+    }
+
     try {
+      await signUp(email, password, `${firstName}`);
+
+      console.log("Verifying email:", email);
+
       const res_verify = await fetch("http://localhost:3000/api/verify", {
         method: "POST",
         headers: {
@@ -69,6 +79,12 @@ export default function SignupPage() {
         }),
       });
 
+      if (user) {
+        setSuccess("");
+        setError("Email already exists !");
+        return;
+      }
+
       if (res.ok) {
         setError("");
         setSuccess("Registration successful.");
@@ -77,6 +93,7 @@ export default function SignupPage() {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+        router.push("/login");
       } else {
         console.log("Error during registration failed.");
       }
@@ -91,7 +108,7 @@ export default function SignupPage() {
         className="absolute top-6 left-6 cursor-pointer"
         onClick={() => router.push("/")}
       >
-        <Image src="/logo.svg" alt="EQ" width={110} height={110} />
+        <Image src="/logo.svg" alt="EQ" width={110} height={110} priority />
       </div>
 
       <div className="absolute top-6 right-6">
@@ -115,7 +132,6 @@ export default function SignupPage() {
         </div>
       </div>
 
-      {/* แอนิเมชัน Signup */}
       <motion.div
         key="signup"
         initial={{ opacity: 0, x: 50 }}
