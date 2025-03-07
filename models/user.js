@@ -12,7 +12,8 @@ const userSchema = new Schema(
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            //unique: true
         },
         password: {
             type: String,
@@ -27,5 +28,6 @@ const userSchema = new Schema(
     { timestamps: true }
 )
 
-const User = mongoose.model.User || mongoose.model("user", userSchema);
+const User = mongoose.models.User || mongoose.model("User", userSchema);
+
 export default User;

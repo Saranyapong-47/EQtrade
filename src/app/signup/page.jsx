@@ -12,7 +12,6 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -191,6 +190,8 @@ export default function SignupPage() {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
               ></input>
@@ -199,7 +200,7 @@ export default function SignupPage() {
                 onClick={handleToggle}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               >
-                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                {showPassword ? <FaEyeSlash size={15} /> : <FaEye size={15} />}
               </button>
             </div>
           </div>
@@ -210,8 +211,10 @@ export default function SignupPage() {
               Confirm Your Password
             </label>
             <div className="relative">
-            <input
+              <input
                 type={showPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
               ></input>
@@ -220,7 +223,7 @@ export default function SignupPage() {
                 onClick={handleToggle}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               >
-                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                {showPassword ? <FaEyeSlash size={15} /> : <FaEye size={15} />}
               </button>
             </div>
           </div>
