@@ -1,19 +1,27 @@
 "use client";
+
 import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
-import { Icon } from "react-icons-kit";
-import { eyeOff } from "react-icons-kit/feather/eyeOff";
-import { eye } from "react-icons-kit/feather/eye";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-export default function AuthPage() {
+export default function LoginPage() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const router = useRouter();
 
-  const handleSubmitSignin = async (e) => {
+  const handleToggle = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -24,7 +32,7 @@ export default function AuthPage() {
       });
 
       if (res.error) {
-        setError("Invalid email or password !");
+        setError("Invalid Email or Password !");
         return;
       }
 
@@ -33,18 +41,6 @@ export default function AuthPage() {
       console.log(error);
     }
   };
-
-  const [isLogin, setIsLogin] = useState(true);
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [type, setType] = useState("password");
-  const [icon, setIcon] = useState(eyeOff);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
   return (
     <div className="relative flex justify-center items-center h-screen  bg-bgcolor">
       <div
@@ -90,24 +86,26 @@ export default function AuthPage() {
             <h2 className="text-2xl font-bold text-center text-white mb-4">
               Log in
             </h2>
-            <form className="space-y-4" onSubmit={handleSubmitSignin}>
-              <div className="bg-red-500 text-white text-sm p-2 rounded-md text-center">
-                {error}
-              </div>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {error && (
+                <div className="bg-red-500 text-white text-sm p-2 rounded-md text-center">
+                  {error}
+                </div>
+              )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-300">
+                <label className="block text-sm font-medium text-gray-300 my-1">
                   Email
                 </label>
                 <input
                   onChange={(e) => setEmail(e.target.value)}
-                  type="email"
+                  type="text"
                   className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
+                  //required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300">
+                <label className="block text-sm font-medium text-gray-300 my-1">
                   Your password
                 </label>
                 <div className="relative">
@@ -115,14 +113,18 @@ export default function AuthPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     type={showPassword ? "text" : "password"}
                     className="w-full px-4 py-2 border border-gray-700 rounded-md bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
+                    //required
                   />
                   <button
                     type="button"
+                    onClick={handleToggle}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? "🙈 Hide" : "👁 Show"}
+                    {showPassword ? (
+                      <FaEyeSlash size={15} />
+                    ) : (
+                      <FaEye size={15} />
+                    )}
                   </button>
                 </div>
               </div>
