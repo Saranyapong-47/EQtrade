@@ -11,6 +11,7 @@ export default {
   	extend: {
   		colors: {
 			bgcolor: "#0B091A",
+			bgsidebar: "#151325",
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
