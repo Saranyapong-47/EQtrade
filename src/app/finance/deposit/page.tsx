@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaHome, FaChartLine, FaDollarSign, FaUniversity, FaUser } from "react-icons/fa";
+import { FaHome, FaChartLine, FaDollarSign, FaUniversity, FaUser, FaSignInAlt } from "react-icons/fa";
 import Image from "next/image";
 
 export default function DepositPage() {
@@ -25,40 +25,72 @@ export default function DepositPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
-      {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 p-6 flex flex-col">
-        <div className="flex items-center space-x-2 mb-8">
-          <div className="bg-green-500 p-2 rounded-lg">
-            <span className="text-black font-bold text-xl">G</span>
-          </div>
-          <h1 className="text-2xl font-bold">EQUITY</h1>
-        </div>
-
-        <nav className="flex flex-col space-y-4">
-          <button className="flex items-center space-x-2 p-3 rounded-lg" onClick={() => router.push("/dashboard/loggedin")}>
-            <FaHome />
-            <span>Home</span>
-          </button>
-          <button className="flex items-center space-x-2 p-3 rounded-lg" onClick={() => router.push("/chart/loggedin")}>
-            <FaChartLine />
-            <span>Chart</span>
-          </button>
-          <button className="flex items-center space-x-2 p-3 rounded-lg" onClick={() => router.push("/asset/loggedin")}>
-            <FaDollarSign />
-            <span>Asset</span>
-          </button>
-          <button className="flex items-center space-x-2 p-3 rounded-lg bg-gray-700" onClick={() => router.push("/finance/loggedin")}>
-            <FaUniversity />
-            <span>Finance</span>
-          </button>
-        </nav>
-
-        <div className="mt-auto flex items-center space-x-2 p-3 rounded-lg bg-gray-700">
-          <FaUser />
-          <span>Arin</span>
-        </div>
-      </aside>
+     <div className="flex h-screen text-white ">
+            {/* Sidebar */}
+            <aside className="h-screen w-50 bg-bgsidebar p-5 flex flex-col justify-center">
+              {/* Logo */}
+              <div className="flex justify-center  mb-8 cursor-pointer" onClick={() => router.push("/dashboard")}>
+                <Image src="/logo.svg" alt="EQ" width={140}  height={140} />
+              </div>
+    
+              {/* Menu */}
+              <nav className="flex flex-col space-y-4">
+                {[
+                  {
+                    tab: "home",
+                    icon: <FaHome />,
+                    text: "Home",
+                    path: "/dashboard",
+                  },
+                  {
+                    tab: "chart",
+                    icon: <FaChartLine />,
+                    text: "Chart",
+                    path: "/chart",
+                  },
+                  {
+                    tab: "asset",
+                    icon: <FaDollarSign />,
+                    text: "Asset",
+                    path: "/asset",
+                  },
+                  {
+                    tab: "finance",
+                    icon: <FaUniversity />,
+                    text: "Finance",
+                    path: "/finance",
+                  },
+                ].map(({ tab, icon, text, path }) => (
+                  <button
+                    key={tab}
+                    className={`flex items-center space-x-2 p-3 rounded-lg ${
+                      activeTab === tab ? "bg-gray-700" : ""
+                    }`}
+                    onClick={() => handleNavigation(tab, path)}
+                  >
+                    {icon}
+                    <span>{text}</span>
+                  </button>
+                ))}
+              </nav>
+    
+              {/* User Profile */}
+              <div className="mt-auto flex items-center space-x-2 p-3 rounded-lg bg-gray-700">
+                <FaUser />
+                <span>{user?.displayName || "Guest"}</span>
+              </div>
+    
+              <div className="mt-1 flex items-center space-x-2 p-3 rounded-lg bg-gray-700">
+                <button
+                  className="flex items-center space-x-2"
+                  onClick={handleLogout}
+                >
+                  <FaSignInAlt />
+                  <span>Logout</span>
+                </button>
+              </div>
+            </aside>
+    
 
       {/* Main Content */}
       <main className="flex-1 p-8 bg-gray-900 flex justify-center items-center">
