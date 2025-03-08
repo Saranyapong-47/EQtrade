@@ -133,7 +133,7 @@ export default function DepositPage() {
           {/* Buttons */}
           <div className="flex space-x-4 mt-6">
             <button
-              onClick={() => router.push("/finance/loggedin")}
+              onClick={() => router.push("/finance")}
               className="w-1/2 bg-gray-600 py-2 rounded-md text-white hover:bg-gray-700 transition"
             >
               ยกเลิก
