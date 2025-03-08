@@ -41,8 +41,8 @@ export default function DashboardLoggedIn() {
         {/* Sidebar */}
         <aside className="h-screen w-50 bg-bgsidebar p-5 flex flex-col justify-center">
           {/* Logo */}
-          <div className="flex justify-center  mb-8">
-            <Image src="/logo.svg" alt="EQ" width={140} height={140} />
+          <div className="flex justify-center  mb-8 cursor-pointer" onClick={() => router.push("/dashboard")}>
+            <Image src="/logo.svg" alt="EQ" width={140}  height={140} />
           </div>
 
           {/* Menu */}
@@ -52,25 +52,25 @@ export default function DashboardLoggedIn() {
                 tab: "home",
                 icon: <FaHome />,
                 text: "Home",
-                path: "/dashboard/loggedin",
+                path: "/dashboard",
               },
               {
                 tab: "chart",
                 icon: <FaChartLine />,
                 text: "Chart",
-                path: "/chart/loggedin",
+                path: "/chart",
               },
               {
                 tab: "asset",
                 icon: <FaDollarSign />,
                 text: "Asset",
-                path: "/asset/loggedin",
+                path: "/asset",
               },
               {
                 tab: "finance",
                 icon: <FaUniversity />,
                 text: "Finance",
-                path: "/finance/loggedin",
+                path: "/finance",
               },
             ].map(({ tab, icon, text, path }) => (
               <button
@@ -102,6 +102,8 @@ export default function DashboardLoggedIn() {
             </button>
           </div>
         </aside>
+
+        {/* Menu */}
 
         {/* Main Content */}
         <main className="flex-1 p-8 bg-bgcolor">
