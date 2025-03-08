@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 
 import { useUserAuth } from "@/context/UserAuthContext";
+import ProtectedRoute from "@/app/api/auth/Protect/Protectedroute";
 
 export default function DepositPage() {
   const router = useRouter();
@@ -52,6 +53,7 @@ export default function DepositPage() {
 
 
   return (
+    <ProtectedRoute>
     <div className="flex h-screen text-white ">
       {/* Sidebar */}
       <aside className="h-screen w-50 bg-bgsidebar p-5 flex flex-col justify-center">
@@ -122,7 +124,7 @@ export default function DepositPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 bg-gray-900 flex justify-center items-center">
+      <main className="flex-1 p-8 bg-bgcolor flex justify-center items-center">
         <div className="bg-gray-800 p-6 rounded-lg w-96 text-center">
           <h2 className="text-2xl font-bold mb-6">ฝากเงิน</h2>
 
@@ -164,5 +166,6 @@ export default function DepositPage() {
         </div>
       </main>
     </div>
+    </ProtectedRoute>
   );
 }

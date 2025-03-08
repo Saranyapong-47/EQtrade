@@ -2,20 +2,11 @@
 import { useUserAuth } from "../../context/UserAuthContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import {
-  FaHome,
-  FaChartLine,
-  FaDollarSign,
-  FaUniversity,
-  FaUser,
-  FaBitcoin,
-  FaLandmark,
-  FaMoneyBillWave,
-  FaChartPie,
-  FaCoins,
-  FaSignInAlt,
-} from "react-icons/fa";
+
+import { FaBitcoin, FaLandmark, FaChartPie, FaCoins } from "react-icons/fa";
+
+import Sidebar from "@/components/Sidebar/page";
+import ProtectedRoute from "../api/auth/Protect/Protectedroute";
 
 export default function MyAssetsPage() {
   const router = useRouter();
@@ -53,10 +44,7 @@ export default function MyAssetsPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleNavigation = (tab: string, path: string) => {
-    setActiveTab(tab);
-    router.push(path);
-  };
+  
 
   const assets = [
     {
@@ -94,75 +82,15 @@ export default function MyAssetsPage() {
     .toLocaleString("th-TH", { minimumFractionDigits: 2 });
 
   return (
+    <ProtectedRoute>
     <div className="flex h-screen text-white ">
       {/* Sidebar */}
-      <aside className="h-screen w-50 bg-[#151325] p-5 flex flex-col justify-center">
-        {/* Logo */}
-        <div
-          className="flex justify-center  mb-8 cursor-pointer"
-          onClick={() => router.push("/dashboard")}
-        >
-          <Image src="/logo.svg" alt="EQ" width={140} height={140} />
-        </div>
-
-        {/* Menu */}
-        <nav className="flex flex-col space-y-4">
-          {[
-            {
-              tab: "home",
-              icon: <FaHome />,
-              text: "Home",
-              path: "/dashboard",
-            },
-            {
-              tab: "chart",
-              icon: <FaChartLine />,
-              text: "Chart",
-              path: "/chart",
-            },
-            {
-              tab: "asset",
-              icon: <FaDollarSign />,
-              text: "Asset",
-              path: "/asset",
-            },
-            {
-              tab: "finance",
-              icon: <FaUniversity />,
-              text: "Finance",
-              path: "/finance",
-            },
-          ].map(({ tab, icon, text, path }) => (
-            <button
-              key={tab}
-              className={`flex items-center space-x-2 p-3 rounded-lg ${
-                activeTab === tab ? "bg-gray-700" : ""
-              }`}
-              onClick={() => handleNavigation(tab, path)}
-            >
-              {icon}
-              <span>{text}</span>
-            </button>
-          ))}
-        </nav>
-
-        {/* User Profile */}
-        <div className="mt-auto flex items-center space-x-2 p-3 rounded-lg bg-gray-700">
-          <FaUser />
-          <span>{user?.displayName || "Guest"}</span>
-        </div>
-
-        <div className="mt-1 flex items-center space-x-2 p-3 rounded-lg bg-gray-700">
-          <button
-            className="flex items-center space-x-2"
-            onClick={handleLogout}
-          >
-            <FaSignInAlt />
-            <span>Logout</span>
-          </button>
-        </div>
-      </aside>
-
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        handleLogout={handleLogout}
+        user={user}
+      />
       {/* Main Content */}
       <main className="flex-1 p-8 bg-bgcolor">
         <h2 className="text-2xl font-bold mb-6">สินทรัพย์ของฉัน</h2>
@@ -200,5 +128,6 @@ export default function MyAssetsPage() {
         </div>
       </main>
     </div>
+    </ProtectedRoute>
   );
 }
