@@ -10,8 +10,8 @@ import { useUserAuth } from "../../context/UserAuthContext";
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  
   const [showPassword, setShowPassword] = useState(false);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

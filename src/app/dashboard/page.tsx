@@ -1,5 +1,5 @@
 "use client";
-//import Image from "next/image";
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaPlus } from "react-icons/fa";
@@ -17,8 +17,10 @@ export default function DashboardLoggedIn() {
 
   const handleLogout = async () => {
     try {
+      console.log("Logging out...")
       await logOut();
-      router.push("/login");
+      router.replace("/");
+      //window.location.href = "/"; // บังคับเปลี่ยนหน้า
     } catch (error) {
       console.log(error);
     }
@@ -27,8 +29,7 @@ export default function DashboardLoggedIn() {
   return (
     <ProtectedRoute>
       <div className="flex h-screen text-white ">
-      
-      {/* Sidebar */}
+        {/* Sidebar */}
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
