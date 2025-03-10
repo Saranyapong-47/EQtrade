@@ -10,11 +10,13 @@ import {
 } from "firebase/auth";
 
 import { auth } from "../app/firebase";
+import { useRouter } from "next/router";
 
 const userAuthContext = createContext();
 
 export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState({});
+  const router = useRouter
 
   function logIn(email, password) {
     return signInWithEmailAndPassword(auth, email, password);
@@ -38,6 +40,7 @@ export function UserAuthContextProvider({ children }) {
     try {
       await signOut(auth);
       setUser(null);
+      //router.push("/");
     } catch (error) {
       console.log(error);
     }

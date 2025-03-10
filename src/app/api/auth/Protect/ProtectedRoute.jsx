@@ -11,7 +11,7 @@ function ProtectedRoute({ children }) {
 
     useEffect(() => {
         if(!user){
-            return router.replace("/login")
+            return router.replace("/")
         }
     },[user,router])
 
