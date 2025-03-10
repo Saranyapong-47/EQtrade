@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useUserAuth } from "@/context/UserAuthContext";
@@ -32,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { setPriority } from "os";
 
 export function SignUpForm({
   className,
@@ -50,11 +51,18 @@ export function SignUpForm({
   const { signUp } = useUserAuth();
 
   const router = useRouter();
-
   const [showPassword, setShowPassword] = useState(false);
+
   const handleToggle = () => {
     setShowPassword(!showPassword);
   };
+  
+  useEffect(() => {
+    setTimeout(() => {
+      setEmail("");
+    }, 500);
+  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,7 +85,15 @@ export function SignUpForm({
     }
 
     try {
+
       await signUp(email, password, `${firstName}`);
+      setSuccess("Your account has been create");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+
+
 
       console.log("Verifying email:", email);
 
@@ -124,13 +140,15 @@ export function SignUpForm({
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        router.push("/login");
+
       } else {
         console.log("Error during registration failed.");
       }
     } catch (error) {
       console.log("Error during registration", error);
     }
+
+
   };
 
   return (
@@ -145,7 +163,7 @@ export function SignUpForm({
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
-            <div className="grid gap-2">
+              <div className="grid gap-2">
                 <Label htmlFor="email">Firs Name</Label>
                 <Input
                   type="text"
@@ -156,7 +174,7 @@ export function SignUpForm({
                 />
               </div>
 
-            <div className="grid gap-2">
+              <div className="grid gap-2">
                 <Label htmlFor="email">Last Name</Label>
                 <Input
                   type="text"
@@ -170,10 +188,14 @@ export function SignUpForm({
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  id="email"
                   type="text"
+                  name="dsjslkd;jfnwevnor"
+                  autoComplete="off"
                   placeholder="m@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+
                   required
                 />
               </div>
@@ -187,6 +209,7 @@ export function SignUpForm({
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+
                     required
                     className="pr-10"
                   />
@@ -214,6 +237,7 @@ export function SignUpForm({
                     type={showPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="off"
                     required
                     className="pr-10"
                   />
@@ -265,6 +289,26 @@ export function SignUpForm({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={success !== ""} onOpenChange={() => setSuccess("")}>
+        <AlertDialogContent className="max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              ✅ Success
+            </AlertDialogTitle>
+            <AlertDialogDescription>{success}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex justify-center">
+            <AlertDialogAction
+              onClick={() => setSuccess("")}
+              className="w-fit px-4 py-2 mx-auto"
+            >
+              OK
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     </div>
   );
 }
