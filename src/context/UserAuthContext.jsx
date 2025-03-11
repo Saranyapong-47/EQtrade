@@ -28,7 +28,10 @@ export function UserAuthContextProvider({ children }) {
         const user = userCredential.user;
         return updateProfile(user, {
           displayName: fullName,
-        }).then(() => user); // ส่งคืน user หลังจากอัปเดตชื่อ
+        }).then(() => {
+          console.log("SignUp Complete!!!");
+          return user;   // ส่งคืน user หลังจากอัปเดตชื่อ
+        });
       })
       .catch((error) => {
         console.error("Error signing up:", error);
