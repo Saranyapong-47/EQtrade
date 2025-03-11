@@ -29,10 +29,12 @@ export function TeamSwitcher({
   }[]
 }) {
   const { isMobile } = useSidebar()
-  const [activeTeam, setActiveTeam] = React.useState(teams[0])
+  const [activeTeam, setActiveTeam] = React.useState(
+    teams?.length > 0 ? teams[0] : null
+  );
 
   if (!activeTeam) {
-    return null
+    return <div className="p-4 text-sm text-gray-500">No teams available</div>;
   }
 
   return (
