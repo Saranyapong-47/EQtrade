@@ -13,26 +13,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useUserAuth } from "@/context/UserAuthContext";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { AlertCircle } from "lucide-react";
 
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { setPriority } from "os";
 
 export function SignUpForm({
   className,
@@ -45,27 +41,35 @@ export function SignUpForm({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const [open, setOpen] = useState(false);
-
   const { signUp } = useUserAuth();
-
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleToggle = () => {
     setShowPassword(!showPassword);
   };
-  
+
   useEffect(() => {
     setTimeout(() => {
       setEmail("");
     }, 500);
   }, []);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!email.includes("@")) {
+      setError("Invalid email format! Please include '@'.");
+      setOpen(true);
+      return;
+    }
+
+    if (!email.includes(".com")) {
+      setError("Invalid email format! Please include '.com'.");
+      setOpen(true);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError("Password do not match !");
@@ -85,15 +89,12 @@ export function SignUpForm({
     }
 
     try {
-
       await signUp(email, password, `${firstName}`);
       setSuccess("Your account has been create");
 
       setTimeout(() => {
         router.push("/");
       }, 1500);
-
-
 
       console.log("Verifying email:", email);
 
@@ -140,15 +141,12 @@ export function SignUpForm({
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-
       } else {
         console.log("Error during registration failed.");
       }
     } catch (error) {
       console.log("Error during registration", error);
     }
-
-
   };
 
   return (
@@ -170,7 +168,6 @@ export function SignUpForm({
                   placeholder="John"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  required
                 />
               </div>
 
@@ -181,7 +178,6 @@ export function SignUpForm({
                   placeholder="Doe"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  required
                 />
               </div>
 
@@ -195,8 +191,6 @@ export function SignUpForm({
                   placeholder="m@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-
-                  required
                 />
               </div>
               <div className="grid gap-2">
@@ -209,8 +203,6 @@ export function SignUpForm({
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-
-                    required
                     className="pr-10"
                   />
                   <button
@@ -238,7 +230,6 @@ export function SignUpForm({
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     autoComplete="off"
-                    required
                     className="pr-10"
                   />
                   <button
@@ -255,9 +246,7 @@ export function SignUpForm({
                 </div>
               </div>
 
-              <Button className="w-full">
-                Sign Up
-              </Button>
+              <Button className="w-full">Sign Up</Button>
             </div>
 
             <div className="mt-4 text-center text-sm">
@@ -303,12 +292,11 @@ export function SignUpForm({
               onClick={() => setSuccess("")}
               className="w-fit px-4 py-2 mx-auto"
             >
-              OK
+              Ok
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </div>
   );
 }
