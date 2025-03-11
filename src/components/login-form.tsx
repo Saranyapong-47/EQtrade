@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useUserAuth } from "@/context/UserAuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Ghost } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -47,7 +48,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6r", className)} {...props}>
-      <Card>
+      <Card className="mx-">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
@@ -65,6 +66,7 @@ export function LoginForm({
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+                
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
