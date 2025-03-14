@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./",
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -20,11 +20,11 @@
       }
     ],
     "paths": {
-      "@/*": ["*"],
-      "@app/": ["app/"],
-      "@lib/*": ["lib/*"],
-      "@models/*": ["models/*"],
-      "@context/*":["context/*"],
+      "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@lib/*": ["src/lib/*"],
+      "@models/*": ["src/app/models/*"], // Ensure this matches the actual path
+      "@context/*": ["src/context/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/login/page.jsx", "src/app/layout.tsx", "src/app/api/auth/[...nextauth]/options.js"],
