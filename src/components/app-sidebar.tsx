@@ -35,7 +35,7 @@ const data = {
     },
     {
       title: "Chart",
-      url: "#",
+      url: "/chart",
       icon: ChartCandlestick,
     },
     {
@@ -45,7 +45,7 @@ const data = {
     },
     {
       title: "Finance",
-      url: "#",
+      url: "/finance",
       icon: Landmark,
     },
   ],
@@ -53,9 +53,9 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" {...props} className="w-55 ">
       <SidebarHeader className="flex justify-center items-center ">
-        <Image src="/Logo.svg" alt="App Logo" width={150} height={150} />
+        <Image src="/LogoEQ.svg" alt="App Logo" width={180} height={180} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
