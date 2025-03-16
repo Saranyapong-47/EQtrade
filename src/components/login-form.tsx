@@ -64,7 +64,7 @@ export function LoginForm({
 
     try {
       await logIn(email, password);
-      setSuccess("Loging.....");
+      setSuccess("loading"); // Indicate loading state
       setTimeout(() => {
         router.push("/dashboard");
       }, 1500);
@@ -161,7 +161,25 @@ export function LoginForm({
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={success !== ""} onOpenChange={() => setSuccess("")}>
+      <AlertDialog open={success === "loading"} onOpenChange={() => setSuccess("")}>
+        <AlertDialogContent className="max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              Logging In
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full animate-pulse"
+                  style={{ width: "75%" }}
+                ></div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={success !== "" && success !== "loading"} onOpenChange={() => setSuccess("")}>
         <AlertDialogContent className="max-w-sm">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
