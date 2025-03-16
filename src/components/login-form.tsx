@@ -70,7 +70,7 @@ export function LoginForm({
       }, 1500);
     } catch (error) {
       console.log(error);
-      setError("Email or Password Invalid!");
+      setError("Login Failed; Invalid Email or password");
       setOpen(true);
     }
   };

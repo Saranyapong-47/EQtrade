@@ -25,10 +25,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  
 } from "@/components/ui/alert-dialog";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle,CheckCircle } from "lucide-react";
 
 import { useUserAuth } from "@/context/UserAuthContext";
+
+
 
 export function SignUpForm({
   className,
@@ -39,6 +42,8 @@ export function SignUpForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [open, setOpen] = useState(false);
@@ -50,14 +55,13 @@ export function SignUpForm({
     setShowPassword(!showPassword);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setEmail("");
-    }, 500);
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setError(""); 
+    setSuccess(""); 
+    setOpen(false);
 
     if (!email.includes("@")) {
       setError("Invalid email format! Please include '@'.");
@@ -86,19 +90,20 @@ export function SignUpForm({
     if (password.length < 6) {
       setError("Password should be at least 6 characters");
       setOpen(true);
+      return;
     }
 
     try {
-      await signUp(email, password, `${firstName}`);
-      /*
-      setSuccess("Your account has been create");
+      const user = await signUp(email, password, `${firstName}`);
 
-      setTimeout(() => {
-        router.push("/");
-      }, 1500);
+      console.log("✅ User registered:", user);
 
-      console.log("✅ Verifying email:", email);
-      */
+      setSuccess("🎉 Your account has been created successfully!");
+      setOpen(true);
+
+     
+
+    
 
 
       const res_verify = await fetch("http://localhost:3000/api/verify", {
@@ -109,9 +114,9 @@ export function SignUpForm({
         body: JSON.stringify({ email }),
       });
 
-      const { user } = await res_verify.json();
+      const { user:verifiedUser } = await res_verify.json();
 
-      if (user) {
+      if (verifiedUser) {
         setSuccess("");
         setError("Email already exists !");
         return;
@@ -122,23 +127,21 @@ export function SignUpForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          email,
-          password,
-        }),
+        body: JSON.stringify({firstName, lastName, email, password,}),
       });
 
-      if (user) {
+      const { user: registeredUser } = await res.json();
+
+      if (registeredUser) {
         setSuccess("");
-        setError("Email already exists !");
+        setError("❌ Email already exists!");
+        setOpen(true);
         return;
       }
 
       if (res.ok) {
         setError("");
-        setSuccess("Registration successful.");
+        setSuccess("✅ Registration successful.");
         setFirstName("");
         setLastName("");
         setEmail("");
@@ -148,19 +151,22 @@ export function SignUpForm({
         console.log("Error during registration failed.");
       }
 
-
-      setSuccess("Your account has been create");
-
       console.log("✅ Verifying email:", email);
 
       setTimeout(() => {
         router.push("/");
       }, 1500);
 
+
+
+
     } catch (error) {
       console.log("Error during registration", error);
     }
   };
+
+
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -276,23 +282,16 @@ export function SignUpForm({
         <AlertDialogContent className="max-w-sm">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-red-500" />
-              Error
+              {error ? <AlertCircle className="h-5 w-5 text-red-500" /> : <CheckCircle className="h-5 w-5 text-green-500" />}
+              {error ? "Error" : "Success"}
             </AlertDialogTitle>
-            <AlertDialogDescription>{error}</AlertDialogDescription>
+            <AlertDialogDescription>{error ? error : success}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex justify-center">
-            <AlertDialogAction
-              onClick={() => setOpen(false)}
-              className="w-fit px-4 py-2 mx-auto"
-            >
-              OK
-            </AlertDialogAction>
+            <AlertDialogAction onClick={() => setOpen(false)}>OK</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-    
     </div>
   );
 }

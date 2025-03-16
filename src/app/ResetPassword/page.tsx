@@ -8,10 +8,10 @@ import { useRouter } from "next/navigation";
 
 import {
   AlertDialog,
-  
+  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
-
+  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
@@ -23,36 +23,54 @@ export default function ResetPassword() {
   const [error, setError] = useState("");
 
   const [success, setSuccess] = useState("");
+  const [open, setOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("");
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const router = useRouter();
 
-  const handleReset = async (e) => {
+  const handleReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    console.log("🔍 handleReset() called");
+    console.log("🔍 Email entered:", email);
+
     setMessage("");
     setError("");
     setSuccess("");
 
-   
+    setOpen(false);
+    setDialogType("");
+    setDialogMessage("");
 
     if (!email.includes("@") || !email.includes(".")) {
-      setError("❌ กรุณากรอกอีเมลให้ถูกต้อง");
+      setDialogType("error");
+      setDialogMessage("❌ กรุณากรอกอีเมลให้ถูกต้อง");
+      setOpen(true);
       return;
     }
 
-
     try {
       const response = await resetPassword(email);
+      console.log("🔍 Reset Password Response:", response);
 
       if (response.success) {
-        setSuccess("📩 Please Check Your Email");
+        setDialogType("success");
+        setDialogMessage(response.message);
+      } else {
+        setDialogType("error");
+        setDialogMessage(response.message);
+      }
+
+      setOpen(true);
+
+      if (response.success) {
         setTimeout(() => {
           router.push("/");
-        }, 3000); // Redirect หลังจาก 3 วินาที
-      } else {
-        setError(response.message);
+        }, 3000);
       }
     } catch (err) {
-      setError("❌ เกิดข้อผิดพลาดในการส่งอีเมล");
+      setError("❌ Error Seding Email.");
       console.error("Reset Password Error:", err);
     }
   };
@@ -72,21 +90,20 @@ export default function ResetPassword() {
           Send Reset Link
         </Button>
       </form>
-      {message && <p className="mt-4 text-green-600">{message}</p>}
-      {error && <p className="mt-4 text-red-600">{error}</p>}
 
-
-      <AlertDialog open={success !== ""} onOpenChange={() => setSuccess("")}>
+      <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent className="max-w-sm">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              ✅ Success
+              {dialogType === "error" ? "❌ Error" : "✅ Success"}
             </AlertDialogTitle>
-            <AlertDialogDescription>{success}</AlertDialogDescription>
+            <AlertDialogDescription>{dialogMessage}</AlertDialogDescription>
           </AlertDialogHeader>
+          <AlertDialogFooter className="flex justify-center">
+            <AlertDialogAction onClick={() => setOpen(false)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    
     </div>
   );
 }
