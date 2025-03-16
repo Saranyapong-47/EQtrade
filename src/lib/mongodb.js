@@ -7,4 +7,6 @@ export const connectMongoDB = async () => {
     } catch (error) {
         console.log("Error in connecting to MongoDB : ", error);
     }
+    console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 }
