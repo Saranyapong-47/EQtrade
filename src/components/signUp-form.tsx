@@ -16,9 +16,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useUserAuth } from "@/context/UserAuthContext";
-
-import { AlertCircle } from "lucide-react";
 
 import {
   AlertDialog,
@@ -29,6 +26,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { AlertCircle } from "lucide-react";
+
+import { useUserAuth } from "@/context/UserAuthContext";
 
 export function SignUpForm({
   className,
@@ -90,13 +90,16 @@ export function SignUpForm({
 
     try {
       await signUp(email, password, `${firstName}`);
+      /*
       setSuccess("Your account has been create");
 
       setTimeout(() => {
         router.push("/");
       }, 1500);
 
-      console.log("Verifying email:", email);
+      console.log("✅ Verifying email:", email);
+      */
+
 
       const res_verify = await fetch("http://localhost:3000/api/verify", {
         method: "POST",
@@ -144,6 +147,16 @@ export function SignUpForm({
       } else {
         console.log("Error during registration failed.");
       }
+
+
+      setSuccess("Your account has been create");
+
+      console.log("✅ Verifying email:", email);
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1500);
+
     } catch (error) {
       console.log("Error during registration", error);
     }
@@ -199,7 +212,7 @@ export function SignUpForm({
                 </div>
                 <div className="relative">
                   <Input
-                    id="password"
+                    id="password1"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -225,7 +238,7 @@ export function SignUpForm({
                 </div>
                 <div className="relative">
                   <Input
-                    id="password"
+                    id="password2"
                     type={showPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}

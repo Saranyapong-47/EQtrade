@@ -7,16 +7,19 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
+
 } from "firebase/auth";
 
 import { auth } from "../app/firebase";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
-const userAuthContext = createContext();
+const userAuthContext = createContext(null);
 
 export function UserAuthContextProvider({ children }) {
-  const [user, setUser] = useState({});
-  const router = useRouter
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+
+ 
 
   function logIn(email, password) {
     return signInWithEmailAndPassword(auth, email, password);
@@ -29,7 +32,7 @@ export function UserAuthContextProvider({ children }) {
         return updateProfile(user, {
           displayName: fullName,
         }).then(() => {
-          console.log("SignUp Complete!!!");
+          console.log("✅ SignUp Complete:", user);
           return user;   // ส่งคืน user หลังจากอัปเดตชื่อ
         });
       })
@@ -43,22 +46,27 @@ export function UserAuthContextProvider({ children }) {
     try {
       await signOut(auth);
       setUser(null);
-      //router.push("/");
+      router.push("/")
+      console.log("✅ User Logged Out");
+     
     } catch (error) {
-      console.log(error);
+      console.error("❌ Logout Error:", error);
     }
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
-      console.log("Auth", currentuser);
+      console.log("🔍 Auth State Changed:", currentuser);
       setUser(currentuser);
+      if (!currentuser){
+        router.push("/")
+      }
     });
 
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [router]);
 
   return (
     <userAuthContext.Provider value={{ user, logIn, signUp, logOut }}>

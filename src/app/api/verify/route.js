@@ -14,6 +14,11 @@ export async function POST(req) {
     return NextResponse.json({ user });
 
   } catch (error) {
-    console.log(error);
+    console.error("❌ API Error:", error);
+
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
