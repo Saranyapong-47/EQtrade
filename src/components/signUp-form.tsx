@@ -292,24 +292,7 @@ export function SignUpForm({
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={success !== ""} onOpenChange={() => setSuccess("")}>
-        <AlertDialogContent className="max-w-sm">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              ✅ Success
-            </AlertDialogTitle>
-            <AlertDialogDescription>{success}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex justify-center">
-            <AlertDialogAction
-              onClick={() => setSuccess("")}
-              className="w-fit px-4 py-2 mx-auto"
-            >
-              Ok
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+    
     </div>
   );
 }
