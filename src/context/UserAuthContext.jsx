@@ -7,10 +7,11 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
+  sendPasswordResetEmail,
 
 } from "firebase/auth";
 
-import { auth } from "../app/firebase";
+import { auth } from "@/app/firebase";
 import { useRouter } from "next/navigation";
 
 const userAuthContext = createContext(null);
@@ -25,22 +26,26 @@ export function UserAuthContextProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
-  function signUp(email, password, fullName) {
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        return updateProfile(user, {
-          displayName: fullName,
-        }).then(() => {
-          console.log("✅ SignUp Complete:", user);
-          return user;   // ส่งคืน user หลังจากอัปเดตชื่อ
-        });
-      })
-      .catch((error) => {
-        console.error("Error signing up:", error);
-        throw error;
-      });
+
+
+
+
+  async function signUp(email, password, fullName) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      await updateProfile(user, { displayName: fullName });
+      console.log("✅ SignUp Complete:", user);
+      return user; // ส่งคืน user หลังจากอัปเดตชื่อ
+
+
+    } catch (error) {
+      console.error("Error signing up:", error);
+      throw error;
+    }
   }
+
+  
 
   async function logOut() {
     try {
@@ -54,10 +59,24 @@ export function UserAuthContextProvider({ children }) {
     }
   }
 
+
+  async function resetPassword(email) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      console.log("📧 Password reset email sent to:", email);
+      return { success: true, message: "📩 กรุณาตรวจสอบอีเมลของคุณ" };
+    } catch (error) {
+      console.error("❌ Reset Password Error:", error.message);
+      return { success: false, message: error.message };
+    }
+  }
+
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
       console.log("🔍 Auth State Changed:", currentuser);
       setUser(currentuser);
+      
       if (!currentuser){
         router.push("/")
       }
@@ -69,7 +88,7 @@ export function UserAuthContextProvider({ children }) {
   }, [router]);
 
   return (
-    <userAuthContext.Provider value={{ user, logIn, signUp, logOut }}>
+    <userAuthContext.Provider value={{ user, logIn, signUp, logOut, resetPassword }}>
       {children}
     </userAuthContext.Provider>
   );
