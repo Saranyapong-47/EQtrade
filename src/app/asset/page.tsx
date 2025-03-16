@@ -1,3 +1,5 @@
+"use client";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -23,22 +25,35 @@ import Image from "next/image";
 import { WalletCard } from "@/components/ui/Wallet";
 
 import ThailandTime from "@/components/Time/RealTime";
+import { useEffect, useState } from "react";
 
 export default function Page() {
-  const totalAsset = 4765893.12;
-  const lastUpdated = "15 Mar 2025 - 02:23 AM";
+  const [assets, setAssets] = useState([]);
+  const [totalAsset, setTotalAsset] = useState(0);
 
-  const assets = [
-    { id: 1, name: "Cash", amount: 953178.62, icon: "/assets/bank.svg" },
-    { id: 2, name: "US Stock", amount: 1906357.25, icon: "/assets/gold.svg" },
-    { id: 3, name: "GOLD", amount: 714883.97, icon: "/assets/money.svg" },
-    {
-      id: 4,
-      name: "Muntual Fund",
-      amount: 1191473.28,
-      icon: "/assets/stock.svg",
-    },
-  ];
+  useEffect(() => {
+    const fetchAssets = async () => {
+      try {
+        const response = await fetch("/api/asset");
+        const data = await response.json();
+        setAssets(data);
+
+        // Dynamically calculate total assets
+        const total = data.reduce((sum, asset) => sum + asset.amount, 0);
+        setTotalAsset(total);
+      } catch (error) {
+        console.error("Error fetching assets:", error);
+      }
+    };
+
+    fetchAssets();
+
+    // Re-fetch data when the page regains focus
+    const handleFocus = () => fetchAssets();
+    window.addEventListener("focus", handleFocus);
+
+    return () => window.removeEventListener("focus", handleFocus);
+  }, []);
 
   return (
     <SidebarProvider>
@@ -67,7 +82,6 @@ export default function Page() {
                 <h2 className="text-lg font-semibold">My Assests</h2>
 
                 <div className="flex items-center gap-2 text-gray-400">
-                  {/* <p className="text-sm">{lastUpdated}</p>*/}
                   <ThailandTime />
                   <Button
                     variant="ghost"
@@ -79,8 +93,6 @@ export default function Page() {
                       className="text-gray-400 hover:text-white transition"
                     />
                   </Button>
-
-                  <p></p>
                 </div>
               </div>
 
@@ -114,21 +126,27 @@ export default function Page() {
             <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {assets.map((asset) => (
                 <Card
-                  key={asset.id}
+                  key={asset._id}
                   className="flex justify-between items-center h-20  p-4 rounded-2xltext-black shadow-sm border border-gray-200 hover:shadow-md hover:bg-gray-100 transition-all text-left bg-white"
                 >
                   <div className="flex items-center gap-2">
-                    <Image
-                      src={asset.icon}
-                      alt={asset.name}
-                      width={36}
-                      height={36}
-                    />
+                    {asset.icon ? (
+                      <Image
+                        src={asset.icon}
+                        alt={asset.name}
+                        width={36}
+                        height={36}
+                      />
+                    ) : (
+                      <div className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center">
+                        <span className="text-gray-500">N/A</span>
+                      </div>
+                    )}
                     <span className="font-semibold">{asset.name}</span>
                   </div>
                   <p className="text-xl font-bold text-right">
                     {asset.amount.toLocaleString()}{" "}
-                    <span className="text-gray-400 text-[16px]">THB</span>
+                    <span className="text-gray-400 text-[16px]">{asset.currency}</span>
                   </p>
                 </Card>
               ))}

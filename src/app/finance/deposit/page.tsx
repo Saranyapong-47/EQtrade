@@ -53,6 +53,27 @@ export default function DepositPage() {
     }
   };
 
+  const handleDeposit = async () => {
+    try {
+      const response = await fetch("/api/asset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: "My Assets", amount: parseFloat(amount) }),
+      });
+
+      if (response.ok) {
+        alert("Deposit successful!");
+        router.push("/asset"); // Redirect to /asset after deposit
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error during deposit:", error);
+      alert("An error occurred while processing the deposit.");
+    }
+  };
+
   return (
     <ProtectedRoute>
     <div className="flex h-screen text-white ">
@@ -139,6 +160,7 @@ export default function DepositPage() {
               ยกเลิก
             </button>
             <button
+              onClick={handleDeposit}
               className="w-1/2 bg-purple-600 py-2 rounded-md text-white hover:bg-purple-700 transition"
             >
               ดำเนินการฝาก
