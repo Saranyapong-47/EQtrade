@@ -12,7 +12,7 @@ export default function TransactionTable() {
       date: "February 21, 2021",
     },
     {
-      icon: "/Bitcoin.png",
+      icon: "/Bitcoin.svg",
       title: "Bitcoin Purchased",
       amount: "0.3 BTC",
       total: "$10.00",
@@ -21,7 +21,7 @@ export default function TransactionTable() {
       date: "February 14, 2021",
     },
     {
-      icon: "/Bitcoin.png",
+      icon: "/Bitcoin.svg",
       title: "Bitcoin Purchased",
       amount: "0.025 BTC",
       total: "$10.00",
