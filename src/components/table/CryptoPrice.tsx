@@ -12,7 +12,7 @@ export default function CryptoPrice() {
       statusClass: "text-yellow-500",
     },
     {
-      icon: "/Bitcoin.png",
+      icon: "/Bitcoin.svg",
       title: "Bitcoin Purchased",
       update: "0.3 BTC",
       change: "3.65 %",
