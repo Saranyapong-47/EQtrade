@@ -23,7 +23,7 @@ export default function TradingViewMiniChart({ symbol }: { symbol: string }) {
     {
       "symbol": "${symbol}",
       "width": "100%",
-      "height": 220,
+      "height": 200,
       "locale": "en",
       "dateRange": "12M",
       "colorTheme": "light",
