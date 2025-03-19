@@ -1,25 +1,71 @@
+import { useState, useEffect,useRef  } from "react";
+
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { WalletCard } from "@/components/ui/Wallet";
-import { useState } from "react";
 
-export default function RightBar() {
+
+import { CryptoName } from "@/data/Crypto";
+
+interface RightBarProps {
+  symbol: string;    //  รับ TradingView Symbol จาก `Page.tsx`
+}
+
+
+export default function RightBar({ symbol }: RightBarProps) {
   const [transactionType, setTransactionType] = useState<"buy" | "sell">("buy");
   const [currency, setCurrency] = useState<"USD" | "THB" | "Shares">("THB");
-  const [amount, setAmount] = useState<number | "">(0);
 
+  const [amount, setAmount] = useState<number | "">(0);
+  const [cryptoPrice, setCryptoPrice] = useState<string | null>(null); 
+
+  const wsRef = useRef<WebSocket | null>(null);
+
+
+  useEffect(() => {
+    if (wsRef.current) {
+      console.log("🔌 Closing previous WebSocket connection...");
+      wsRef.current.close(); // ✅ ปิด WebSocket ก่อนเปิดใหม่
+      
+    }
+
+    console.log(`🔄 Opening new WebSocket for symbol: ${symbol}`);
+
+    const selectedCrypto = CryptoName.find((crypto) => crypto.tradingViewSymbol === symbol);
+
+    const binanceSymbol = selectedCrypto ? selectedCrypto.binanceSymbol : symbol; // ✅ หา symbol ที่ตรงกัน
+
+    console.log(`🔄 Connecting to Binance WebSocket for: ${binanceSymbol}`);
+
+    wsRef.current = new WebSocket(`wss://stream.binance.com:9443/ws/${binanceSymbol}@trade`);
+
+    wsRef.current.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setCryptoPrice(parseFloat(data.p).toFixed(4));
+    };
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+    };
+  }, [symbol]);
+
+
+  
   const handleQuickAmount = (percent: number) => {
+    const balance = 50000; // ตัวอย่างยอดเงิน
     setAmount(parseFloat(((balance * percent) / 100).toFixed(2)));
   };
 
-  const balance = 50000;
+
   return (
     <div>
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center">
-          $55,698.48 <span className="text-lg text-[#008000] ">+1.2%</span>
+        ${cryptoPrice ? cryptoPrice : "กำลังโหลด..."}{" "} <span className="text-lg text-[#008000] ">+1.2%</span>
         </CardTitle>
       </CardHeader>
 

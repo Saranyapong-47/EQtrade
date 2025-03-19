@@ -53,11 +53,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props} className="w-55 ">
-      <SidebarHeader className="flex justify-center items-center ">
-        <Image src="/LogoEQ.svg" alt="App Logo" width={180} height={180} />
+    <Sidebar collapsible="icon" {...props} className="w-55 h-screen">
+      <SidebarHeader className="flex justify-center items-center w-55 ">
+        <Image src="/EQ-Logo2.svg" alt="App Logo" width={200} height={100} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className ="-mt-12">
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
