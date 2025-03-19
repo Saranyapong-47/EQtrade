@@ -1,0 +1,15 @@
+{
+    "name": "crypto-info-app",
+    "version": "1.0.0",
+    "description": "โปรเจคดึงข้อมูลราคาคริปโตและโลโก้จาก CoinGecko API",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "axios": "^1.8.3"
+    },
+    "author": "Your Name",
+    "license": "MIT"
+}
