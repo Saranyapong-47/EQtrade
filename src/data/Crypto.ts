@@ -3,9 +3,9 @@ export const CryptoName = [
       id: 1,
       name: "Bitcoin (BTC)",
       value: "btc",
-      tradingViewSymbol: "BINANCE:BTCUSDT", // ✅ ใช้กับ TradingView
-      binanceSymbol: "btcusdt", // ✅ ใช้กับ Binance WebSocket API
-      icon: "/bitcoin.svg",
+      tradingViewSymbol: "BINANCE:BTCUSDT",
+      binanceSymbol: "btcusdt", 
+      icon: "/Logo_Crypto/bitcoin.svg",
     },
     {
       id: 2,
@@ -13,7 +13,7 @@ export const CryptoName = [
       value: "eth",
       tradingViewSymbol: "BINANCE:ETHUSDT",
       binanceSymbol: "ethusdt",
-      icon: "/binance-logo.svg",
+      icon: "/Logo_Crypto/ethereum.svg",
     },
     {
       id: 3,
@@ -21,7 +21,7 @@ export const CryptoName = [
       value: "xrp",
       tradingViewSymbol: "BINANCE:XRPUSDT",
       binanceSymbol: "xrpusdt",
-      icon: "/bitcoin.svg",
+      icon: "/Logo_Crypto/xrp.svg",
     },
     {
       id: 4,
@@ -29,7 +29,7 @@ export const CryptoName = [
       value: "doge",
       tradingViewSymbol: "BINANCE:DOGEUSDT",
       binanceSymbol: "dogeusdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/dogecoin.svg",
     },
     {
       id: 5,
@@ -37,7 +37,7 @@ export const CryptoName = [
       value: "bnb",
       tradingViewSymbol: "BINANCE:BNBUSDT",
       binanceSymbol: "bnbusdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/binance.svg",
     },
     {
       id: 6,
@@ -45,7 +45,7 @@ export const CryptoName = [
       value: "sol",
       tradingViewSymbol: "BINANCE:SOLUSDT",
       binanceSymbol: "solusdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/solana.svg",
     },
     {
       id: 7,
@@ -53,7 +53,7 @@ export const CryptoName = [
       value: "link",
       tradingViewSymbol: "BINANCE:LINKUSDT",
       binanceSymbol: "linkusdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/Chainlink.svg",
     },
     {
       id: 8,
@@ -61,7 +61,7 @@ export const CryptoName = [
       value: "ton",
       tradingViewSymbol: "BINANCE:TONUSDT",
       binanceSymbol: "tonusdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/toncoin.svg",
     },
     {
       id: 9,
@@ -69,7 +69,7 @@ export const CryptoName = [
       value: "ada",
       tradingViewSymbol: "BINANCE:ADAUSDT",
       binanceSymbol: "adausdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/ADA.svg",
     },
     {
       id: 10,
@@ -77,7 +77,7 @@ export const CryptoName = [
       value: "dot",
       tradingViewSymbol: "BINANCE:DOTUSDT",
       binanceSymbol: "dotusdt",
-      icon: "/kbank.svg",
+      icon: "/Logo_Crypto/polkadot.svg",
     },
   ];
   
