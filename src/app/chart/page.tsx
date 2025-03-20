@@ -19,7 +19,8 @@ import { Card } from "@/components/ui/card";
 
 import { ChevronRight } from "lucide-react";
 import RightBar from "@/components/TransactionBar/RightBar";
-import { SelectSymbol } from "@/components/SelectSymbol/selectSymbol";
+import { SelectStock } from "@/components/SelectStock/SelectStock";
+import { SelectCrypto } from "@/components/SelectCrypto/SelectCrypto";
 import { CryptoName } from "@/data/Crypto";
 
 export default function Page() {
@@ -35,9 +36,9 @@ export default function Page() {
     ? selectedCrypto.binanceSymbol
     : "btcusdt";
 
-    console.log("🔄 Selected TradingView Symbol:", selectedTradingViewSymbol);
-    console.log("🔄 Mapped Binance Symbol:", selectedBinanceSymbol);
-    
+  console.log("🔄 Selected TradingView Symbol:", selectedTradingViewSymbol);
+  console.log("🔄 Mapped Binance Symbol:", selectedBinanceSymbol);
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -52,14 +53,21 @@ export default function Page() {
                 <BreadcrumbItem className="hidden md:flex items-center gap-2">
                   <BreadcrumbLink href="/chart">Chart</BreadcrumbLink>
                   <p className="ml-10 text-black font-semibold text-[16px]">
-                    Select Symbol
+                    Crypto :
                   </p>
-                  <div className="ml-1">
-                    <SelectSymbol
+                  <div className="">
+                    <SelectCrypto
                       onChange={(symbol) =>
                         setSelectedTradingViewSymbol(symbol)
                       }
                     />
+                  </div>
+
+                  <p className="ml-5 text-black font-semibold text-[16px]">
+                    Stock :
+                  </p>
+                  <div className="">
+                    <SelectStock />
                   </div>
                 </BreadcrumbItem>
               </BreadcrumbList>
