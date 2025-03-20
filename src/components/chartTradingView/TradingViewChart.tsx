@@ -64,6 +64,7 @@ export default function TradingViewChart({ symbol }: TradingViewChartProps) {
           locale: "en",
           container_id: "tradingview_container", // ✅ ใช้ ID ที่มีจริง
           hide_top_toolbar: false,
+          hide_side_toolbar: false,
           allow_symbol_change: false,
         });
       } else {
