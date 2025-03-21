@@ -20,8 +20,9 @@ import { Card } from "@/components/ui/card";
 import { ChevronRight } from "lucide-react";
 import RightBar from "@/components/TransactionBar/RightBar";
 import { SelectStock } from "@/components/SelectStock/SelectStock";
-import { SelectCrypto } from "@/components/SelectCrypto/SelectCrypto";
+import { SelectCrypto } from "@/components/SelectCrypto/selectCrypto";
 import { CryptoName } from "@/data/Crypto";
+import { SelectSymbolSwitcher } from "@/components/SelectSymbolSwitcher/SelectSymbolSwitcher";
 
 export default function Page() {
   const { symbols, loading, error } = useFetchSymbols(4);
@@ -52,22 +53,8 @@ export default function Page() {
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:flex items-center gap-2">
                   <BreadcrumbLink href="/chart">Chart</BreadcrumbLink>
-                  <p className="ml-10 text-black font-semibold text-[16px]">
-                    Crypto :
-                  </p>
-                  <div className="">
-                    <SelectCrypto
-                      onChange={(symbol) =>
-                        setSelectedTradingViewSymbol(symbol)
-                      }
-                    />
-                  </div>
-
-                  <p className="ml-5 text-black font-semibold text-[16px]">
-                    Stock :
-                  </p>
-                  <div className="">
-                    <SelectStock />
+                  <div className="ml-10 text-black font-semibold text-[16px]">
+                  <SelectSymbolSwitcher onChange={(symbol) => setSelectedTradingViewSymbol(symbol)} />
                   </div>
                 </BreadcrumbItem>
               </BreadcrumbList>
