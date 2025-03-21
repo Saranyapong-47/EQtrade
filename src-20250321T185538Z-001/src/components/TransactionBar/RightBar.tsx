@@ -7,6 +7,9 @@ import Image from "next/image";
 import { WalletCard } from "@/components/ui/Wallet";
 
 import { CryptoName } from "@/data/Crypto";
+import { StockName } from "@/data/Stock";
+import { useBinanceTradePrice } from "@/hooks/useBinance";
+import { FindIcon } from "@/lib/FindIcon";
 
 interface RightBarProps {
   symbol: string; //  รับ TradingView Symbol จาก `Page.tsx`
@@ -17,54 +20,24 @@ export default function RightBar({ symbol }: RightBarProps) {
   const [currency, setCurrency] = useState<"USD" | "THB" | "Shares">("THB");
 
   const [amount, setAmount] = useState<number | "">(0);
-  const [cryptoPrice, setCryptoPrice] = useState<string | null>(null);
   const [cryptoName, setCryptoName] = useState<string | null>(null);
 
-  const wsRef = useRef<WebSocket | null>(null);
+  const [cryptoIcon, setCryptoIcon] = useState<string | null>(null);
+
+  const binanceSymbol =
+    CryptoName.find((crypto) => crypto.tradingViewSymbol === symbol)
+      ?.binanceSymbol || symbol;
+
+  const cryptoPrice = useBinanceTradePrice(binanceSymbol);
 
   useEffect(() => {
-    if (wsRef.current) {
-      console.log("🔌 Closing previous WebSocket connection...");
-      wsRef.current.close(); // ✅ ปิด WebSocket ก่อนเปิดใหม่
-    }
-
-    console.log(`🔄 Opening new WebSocket for symbol: ${symbol}`);
-
-    const selectedCrypto1 = CryptoName.find(
-      (crypto) => crypto.binanceSymbol === symbol
-    );
-
-    if (!selectedCrypto1) {
-      console.warn(`⚠️ No matching symbol found for: ${symbol}`);
-      setCryptoName("Unknown Coin");
-    } else {
-      setCryptoName(selectedCrypto1.name);
-    }
-
-    const selectedCrypto = CryptoName.find(
-      (crypto) => crypto.tradingViewSymbol === symbol
-    );
-    const binanceSymbol = selectedCrypto
-      ? selectedCrypto.binanceSymbol
-      : symbol; // ✅ หา symbol ที่ตรงกัน
-
-    console.log(`🔄 Connecting to Binance WebSocket for: ${binanceSymbol}`);
-
-    wsRef.current = new WebSocket(
-      `wss://stream.binance.com:9443/ws/${binanceSymbol}@trade`
-    );
-
-    wsRef.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setCryptoPrice(parseFloat(data.p).toFixed(4));
-    };
-
-    return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-    };
+    const { name, icon } = FindIcon(symbol);
+    setCryptoName(name);
+    setCryptoIcon(icon);
   }, [symbol]);
+  
+  
+  
 
   const handleQuickAmount = (percent: number) => {
     const balance = 50000; // ตัวอย่างยอดเงิน
@@ -143,12 +116,11 @@ export default function RightBar({ symbol }: RightBarProps) {
 
           <div className="flex items-center gap-2 mt-4">
             <Image
-              src="/Bitcoin.svg"
-              alt="Bitcoin"
-              width={40}
-              height={40}
-            ></Image>
-
+              src={cryptoIcon || "/Bitcoin.svg"}
+              alt={cryptoName || "Asset"}
+              width={30}
+              height={30}
+            />
             <div className="relative flex items-center w-full ">
               <Input
                 type="number"

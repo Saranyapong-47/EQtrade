@@ -4,7 +4,7 @@ export const StockName = [
       name: "Apple Inc. (AAPL)",
       value: "aapl",
       tradingViewSymbol: "NASDAQ:AAPL",
-      binanceSymbol: null,
+      binanceSymbol: "AAPL",
       icon: "/Logo_Stocks/apple.svg",
     },
     {
@@ -12,15 +12,15 @@ export const StockName = [
       name: "Amazon.com Inc. (AMZN)",
       value: "amzn",
       tradingViewSymbol: "NASDAQ:AMZN",
-      binanceSymbol: null,
+      binanceSymbol: "AMZN",
       icon: "/Logo_Stocks/amazon.svg",
     },
     {
       id: 3,
-      name: "NVIDIA Corporation ()",
+      name: "NVIDIA Corporation (NVDA)",
       value: "nvda",
       tradingViewSymbol: "NASDAQ:NVDA",
-      binanceSymbol: null,
+      binanceSymbol: "NVDA",
       icon: "/Logo_Stocks/nvidia.svg",
     },
     {
@@ -28,7 +28,7 @@ export const StockName = [
       name: "Tesla Inc. (TSLA)",
       value: "tsla",
       tradingViewSymbol: "NASDAQ:TSLA",
-      binanceSymbol: null,
+      binanceSymbol: "TSLA",
       icon: "/Logo_Stocks/tesla.svg",
     },
     {
@@ -36,7 +36,7 @@ export const StockName = [
       name: "Microsoft Corporation (MSFT)",
       value: "msft",
       tradingViewSymbol: "NASDAQ:MSFT",
-      binanceSymbol: null,
+      binanceSymbol: "MSFT",
       icon: "/Logo_Stocks/microsoft.svg",
     },
     {
@@ -44,7 +44,7 @@ export const StockName = [
       name: "Alphabet Inc. (GOOGL)",
       value: "googl",
       tradingViewSymbol: "NASDAQ:GOOGL",
-      binanceSymbol: null,
+      binanceSymbol: "GOOGL",
       icon: "/Logo_Stocks/google.svg",
     },
     {
@@ -52,15 +52,15 @@ export const StockName = [
       name: "Meta Platforms Inc. (META)",
       value: "meta",
       tradingViewSymbol: "NASDAQ:META",
-      binanceSymbol: null,
+      binanceSymbol: "META",
       icon: "/Logo_Stocks/meta.svg",
     },
     {
       id: 8,
       name: "Nike Inc. (NKE)",
       value: "nke",
-      tradingViewSymbol: "NASDAQ:NKE",
-      binanceSymbol: null,
+      tradingViewSymbol: "NYSE:NKE",
+      binanceSymbol: "NKE",
       icon: "/Logo_Stocks/nike.svg",
     },
     {
@@ -68,7 +68,7 @@ export const StockName = [
       name: "Netflix Inc. (NFLX)",
       value: "nflx",
       tradingViewSymbol: "NASDAQ:NFLX",
-      binanceSymbol: null,
+      binanceSymbol: "NFLX",
       icon: "/Logo_Stocks/netflix.svg",
     },
     {
@@ -76,7 +76,7 @@ export const StockName = [
       name: "Visa Inc. (V)",
       value: "v",
       tradingViewSymbol: "NYSE:V",
-      binanceSymbol: null,
+      binanceSymbol: "V",
       icon: "/Logo_Stocks/visa.svg",
     },
   ];
