@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
+
+
 declare global {
   interface Window {
     TradingView?: any;
@@ -11,7 +13,7 @@ interface TradingViewChartProps {
   symbol: string;
 }
 
-export default function TradingViewChart({ symbol }: TradingViewChartProps) {
+export default function TradingViewChart({  symbol = "BTCUSD"  }: TradingViewChartProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scriptReady, setScriptReady] = useState(false);
 
@@ -32,6 +34,8 @@ export default function TradingViewChart({ symbol }: TradingViewChartProps) {
 
   useEffect(() => {
     if (!scriptReady || !window.TradingView || !containerRef.current) return;
+    
+
 
     const loadWidget = () => {
       containerRef.current!.innerHTML = `<div id="tradingview_container" class="w-full h-full"></div>`;

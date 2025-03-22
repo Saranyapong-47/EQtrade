@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import {
@@ -21,10 +21,11 @@ import { ChevronRight } from "lucide-react";
 
 import TradingViewMiniChart from "@/components/chartTradingView/SymbolChart/SymbolChart";
 import { useFetchSymbols } from "@/components/chartTradingView/SymbolChart/symbolFetch";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-
-   const { symbols, loading, error } = useFetchSymbols(4);
+  const router = useRouter();
+  const { symbols, loading, error } = useFetchSymbols(4);
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -51,43 +52,28 @@ export default function Page() {
             </div>
           </div>
 
-   <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
-          {loading ? (
-            <p>Loading...</p>
-          ) : symbols && symbols.length > 0 ? (
-            symbols.map((symbol) => (
-              <div
-                key={symbol}
-                className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center"
-              >
-                <TradingViewMiniChart symbol={symbol} />
-              </div>
-            ))
-          ) : (
-            <p>No symbols available</p>
-          )}
-        </div>
-
-
-          {/*
-
-          <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-            <div className="h-[190px] w-full rounded-xl bg-muted/50 flex items-center justify-center">
-              Bitcoin
-            </div>
-            <div className="h-[190px] w-full rounded-xl bg-muted/50 flex items-center justify-center">
-              Ethereum
-            </div>
-            <div className="h-[190px] w-full rounded-xl bg-muted/50 flex items-center justify-center">
-              AAPL
-            </div>
-            <div className="h-[190px] w-full rounded-xl bg-muted/50 flex items-center justify-center">
-              Tesla
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+            {loading ? (
+              <p>Loading...</p>
+            ) : symbols && symbols.length > 0 ? (
+              symbols.map((symbol) => (
+                <div
+                  key={symbol}
+                  className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center cursor-pointer hover:shadow-lg hover:scale-[1.02] transition"
+                  onClick={() => {
+                    console.log("clicked:", symbol);
+                    router.push("/chart");
+                  }}
+                >
+                  <div className="pointer-events-none">
+                    <TradingViewMiniChart symbol={symbol} />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No symbols available</p>
+            )}
           </div>
-
-          */}
-
 
           <div className="flex flex-row">
             <div className="pl-3 text-[24px] font-semibold">ACTIVITY</div>

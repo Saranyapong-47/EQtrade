@@ -23,8 +23,10 @@ import { SelectStock } from "@/components/SelectStock/SelectStock";
 import { SelectCrypto } from "@/components/SelectCrypto/selectCrypto";
 import { CryptoName } from "@/data/Crypto";
 import { SelectSymbolSwitcher } from "@/components/SelectSymbolSwitcher/SelectSymbolSwitcher";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const router = useRouter();
   const { symbols, loading, error } = useFetchSymbols(4);
   const [selectedTradingViewSymbol, setSelectedTradingViewSymbol] = useState(
     CryptoName[0].tradingViewSymbol
@@ -54,7 +56,11 @@ export default function Page() {
                 <BreadcrumbItem className="hidden md:flex items-center gap-2">
                   <BreadcrumbLink href="/chart">Chart</BreadcrumbLink>
                   <div className="ml-10 text-black font-semibold text-[16px]">
-                  <SelectSymbolSwitcher onChange={(symbol) => setSelectedTradingViewSymbol(symbol)} />
+                    <SelectSymbolSwitcher
+                      onChange={(symbol) =>
+                        setSelectedTradingViewSymbol(symbol)
+                      }
+                    />
                   </div>
                 </BreadcrumbItem>
               </BreadcrumbList>
@@ -72,16 +78,22 @@ export default function Page() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 mx-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
           {loading ? (
             <p>Loading...</p>
           ) : symbols && symbols.length > 0 ? (
             symbols.map((symbol) => (
               <div
                 key={symbol}
-                className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center"
+                className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center cursor-pointer hover:shadow-lg hover:scale-[1.02] transition"
+                onClick={() => {
+                  console.log("clicked:", symbol);
+                  router.push("/chart");
+                }}
               >
-                <TradingViewMiniChart symbol={symbol} />
+                <div className="pointer-events-none">
+                  <TradingViewMiniChart symbol={symbol} />
+                </div>
               </div>
             ))
           ) : (
