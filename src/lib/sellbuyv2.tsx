@@ -34,37 +34,50 @@ const App: React.FC = () => {
     AMZN: { name: "Amazon", price: 3500 },
   };
 
-  // การอัปเดต UI
-  const updateUI = () => {
-    let totalStocksOwned = 0;
-    Object.keys(userStocks).forEach(stock => {
-      totalStocksOwned += userStocks[stock];
-    });
-
-    return totalStocksOwned;
+  const saveTransactionToDB = async (transaction: Transaction) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/transactions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(transaction),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to save transaction');
+      }
+  
+      const data = await response.json();
+      console.log('Transaction saved to MongoDB:', data);
+    } catch (error) {
+      console.error('Error saving transaction:', error);
+    }
   };
-
+  
   // ฟังก์ชันการซื้อหุ้น
   const buyStock = () => {
     const stockPrice = stocks[selectedStock].price;
     const totalCost = stockPrice * selectedQuantity;
-
+  
     if (selectedQuantity > 0) {
       if (userBalance >= totalCost) {
         setUserBalance(userBalance - totalCost);
         setUserStocks({ ...userStocks, [selectedStock]: userStocks[selectedStock] + selectedQuantity });
-
-        // บันทึกการซื้อขายในประวัติ
-        setTransactionHistory([
-          ...transactionHistory,
-          {
-            action: "Buy",
-            stock: stocks[selectedStock].name,
-            quantity: selectedQuantity,
-            price: stockPrice,
-            total: totalCost,
-          },
-        ]);
+  
+        const newTransaction: Transaction = {
+          action: "Buy",
+          stock: stocks[selectedStock].name,
+          quantity: selectedQuantity,
+          price: stockPrice,
+          total: totalCost,
+        };
+  
+        setTransactionHistory([...transactionHistory, newTransaction]);
+  
+        // ⬇️ ส่งไป MongoDB
+        saveTransactionToDB(newTransaction);
+  
         alert(`Bought ${selectedQuantity} shares of ${stocks[selectedStock].name} for $${totalCost}`);
       } else {
         alert("Not enough funds to buy the stock.");
@@ -73,32 +86,35 @@ const App: React.FC = () => {
       alert("Please enter a valid quantity.");
     }
   };
+  
 
-  // ฟังก์ชันการขายหุ้น
   const sellStock = () => {
     const stockPrice = stocks[selectedSellStock].price;
     const totalSale = stockPrice * selectedSellQuantity;
-
+  
     if (selectedSellQuantity > 0 && selectedSellQuantity <= userStocks[selectedSellStock]) {
       setUserBalance(userBalance + totalSale);
       setUserStocks({ ...userStocks, [selectedSellStock]: userStocks[selectedSellStock] - selectedSellQuantity });
-
-      // บันทึกการขายในประวัติ
-      setTransactionHistory([
-        ...transactionHistory,
-        {
-          action: "Sell",
-          stock: stocks[selectedSellStock].name,
-          quantity: selectedSellQuantity,
-          price: stockPrice,
-          total: totalSale,
-        },
-      ]);
+  
+      const newTransaction: Transaction = {
+        action: "Sell",
+        stock: stocks[selectedSellStock].name,
+        quantity: selectedSellQuantity,
+        price: stockPrice,
+        total: totalSale,
+      };
+  
+      setTransactionHistory([...transactionHistory, newTransaction]);
+  
+      // ⬇ ส่งไป MongoDB
+      saveTransactionToDB(newTransaction);
+  
       alert(`Sold ${selectedSellQuantity} shares of ${stocks[selectedSellStock].name} for $${totalSale}`);
     } else {
       alert("You don't have enough stocks to sell.");
     }
   };
+  
 
   // อัปเดตตัวเลือกหุ้นที่สามารถขาย
   const updateSellStockSelector = () => {
@@ -106,7 +122,7 @@ const App: React.FC = () => {
     return availableStocks;
   };
 
-  // การแสดงกราฟราคาหุ้น
+  
  
 
   
