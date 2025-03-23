@@ -1,4 +1,8 @@
+
 "use client";
+=======
+import { useState, useEffect, useRef } from "react";
+
 
 import { useState, useEffect } from "react";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -8,13 +12,20 @@ import Image from "next/image";
 import { WalletCard } from "@/components/ui/Wallet";
 
 import { CryptoName } from "@/data/Crypto";
+import { StockName } from "@/data/Stock";
+import { useBinanceTradePrice } from "@/hooks/useBinance";
+import { FindIcon } from "@/lib/FindIcon";
 
 import { useBinanceTradePrice } from "@/hooks/useBinance";
 import { useYahooStockPrice } from "@/hooks/useYahooStockPrice";
 import { FindIcon } from "@/lib/FindIcon";
 
 interface RightBarProps {
+
   symbol: string; // TradingView Symbol เช่น "BINANCE:BTCUSDT" หรือ "NASDAQ:AAPL"
+=======
+  symbol: string; //  รับ TradingView Symbol จาก `Page.tsx`
+
 }
 
 export default function RightBar({ symbol }: RightBarProps) {
@@ -22,6 +33,7 @@ export default function RightBar({ symbol }: RightBarProps) {
   const [currency, setCurrency] = useState<"USD" | "THB" | "Shares">("THB");
   const [amount, setAmount] = useState<number | "">(0);
   const [cryptoName, setCryptoName] = useState<string | null>(null);
+
   const [cryptoIcon, setCryptoIcon] = useState<string | null>(null);
 
   // 🔁 แปลง symbol ให้แมตช์ได้
@@ -51,6 +63,25 @@ export default function RightBar({ symbol }: RightBarProps) {
     setCryptoName(result.name);
     setCryptoIcon(result.icon);
   }, [symbol]);
+=======
+
+  const [cryptoIcon, setCryptoIcon] = useState<string | null>(null);
+
+  const binanceSymbol =
+    CryptoName.find((crypto) => crypto.tradingViewSymbol === symbol)
+      ?.binanceSymbol || symbol;
+
+  const cryptoPrice = useBinanceTradePrice(binanceSymbol);
+
+  useEffect(() => {
+    const { name, icon } = FindIcon(symbol);
+    setCryptoName(name);
+    setCryptoIcon(icon);
+  }, [symbol]);
+  
+  
+  
+
 
   const handleQuickAmount = (percent: number) => {
     const balance = 50000;
@@ -60,6 +91,7 @@ export default function RightBar({ symbol }: RightBarProps) {
   return (
     <div>
       <CardHeader>
+
         <CardTitle className="text-2xl text-left font-bold">
           <p className="mb-1">{cryptoName}</p>
           {isCrypto ? (
@@ -69,6 +101,12 @@ export default function RightBar({ symbol }: RightBarProps) {
           ) : (
             "Loading (Yahoo)..."
           )}
+=======
+        <CardTitle className="text-2xl text-left font-bold ">
+          <p className="mb-1">{cryptoName}</p>$
+          {cryptoPrice ? cryptoPrice : "กำลังโหลด..."}{" "}
+          <span className="text-lg text-[#008000] ">+1.2%</span>
+
         </CardTitle>
       </CardHeader>
 
@@ -159,7 +197,11 @@ export default function RightBar({ symbol }: RightBarProps) {
 
           <div className="flex justify-center">
             <Button
+
               className={`w-1/2 mt-2 py-2 rounded-md text-white transition ${
+
+              className={`w-1/2 mt-2 py-2 rounded-md text-white transition  ${
+
                 transactionType === "buy"
                   ? "bg-[#28A745] hover:bg-[#289328]"
                   : "bg-red-600 hover:bg-red-700"
