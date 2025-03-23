@@ -21,7 +21,6 @@ import { ChevronRight } from "lucide-react";
 import { useFetchSymbols } from "@/components/chartTradingView/SymbolChart/symbolFetch";
 import { useRouter } from "next/navigation";
 
-
 import MiniChartItem from "@/components/chartTradingView/SymbolChart/MinichartItem";
 import { resolveTradingViewSymbol}  from "@/lib/handleSymbolClick";
 
@@ -29,7 +28,6 @@ import { resolveTradingViewSymbol}  from "@/lib/handleSymbolClick";
 export default function Page() {
   const router = useRouter();
   const { symbols, loading, error } = useFetchSymbols(4);
-
 
   const handleMiniChartClick = (clickedSymbol: string) => {
     const result = resolveTradingViewSymbol(clickedSymbol);
@@ -42,7 +40,6 @@ export default function Page() {
     }
   };
   
-
 
   return (
     <SidebarProvider>
@@ -74,7 +71,6 @@ export default function Page() {
             {loading ? (
               <p>Loading...</p>
             ) : symbols && symbols.length > 0 ? (
-
              symbols.map((symbol) => (
                            <MiniChartItem
                              key={symbol}
@@ -85,22 +81,6 @@ export default function Page() {
                             }}
                            />
                          ))  
-=======
-              symbols.map((symbol) => (
-                <div
-                  key={symbol}
-                  className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center cursor-pointer hover:shadow-lg hover:scale-[1.02] transition"
-                  onClick={() => {
-                    console.log("clicked:", symbol);
-                    router.push("/chart");
-                  }}
-                >
-                  <div className="pointer-events-none">
-                    <TradingViewMiniChart symbol={symbol} />
-                  </div>
-                </div>
-              ))
-
             ) : (
               <p>No symbols available</p>
             )}

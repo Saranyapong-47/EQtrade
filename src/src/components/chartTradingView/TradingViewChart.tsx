@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-
-
 declare global {
   interface Window {
     TradingView?: any;
@@ -14,9 +12,6 @@ interface TradingViewChartProps {
 }
 
 export default function TradingViewChart({ symbol = "BTCUSDT" }: TradingViewChartProps) {
-=======
-export default function TradingViewChart({  symbol = "BTCUSD"  }: TradingViewChartProps) {
-
   const containerRef = useRef<HTMLDivElement>(null);
   const [scriptReady, setScriptReady] = useState(false);
 
@@ -38,7 +33,6 @@ export default function TradingViewChart({  symbol = "BTCUSD"  }: TradingViewCha
 
   // Load widget after script and DOM ready
   useEffect(() => {
-
     if (!scriptReady || !containerRef.current) return;
 
     const loadWidget = () => {
@@ -51,19 +45,6 @@ export default function TradingViewChart({  symbol = "BTCUSD"  }: TradingViewCha
           new window.TradingView.widget({
             autosize: true,
             symbol,
-=======
-    if (!scriptReady || !window.TradingView || !containerRef.current) return;
-    
-
-
-    const loadWidget = () => {
-      containerRef.current!.innerHTML = `<div id="tradingview_container" class="w-full h-full"></div>`;
-
-      requestAnimationFrame(() => {
-        if (document.getElementById("tradingview_container")) {
-          new window.TradingView.widget({
-            autosize: true,
-            symbol: symbol,
             interval: "D",
             timezone: "Etc/UTC",
             theme: "light",
@@ -83,12 +64,6 @@ export default function TradingViewChart({  symbol = "BTCUSD"  }: TradingViewCha
       requestAnimationFrame(tryLoad);
     };
 
-
-        }
-      });
-    };
-
-    // delay load for safety
     const timeout = setTimeout(loadWidget, 100);
 
     return () => {
