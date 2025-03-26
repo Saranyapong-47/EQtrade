@@ -1,0 +1,35 @@
+export const depositMethods = [
+  {
+    id: 1,
+    name: "Bank Transfer",
+    processingTime: "Instant - 1 minutes",
+    fee: " 0%",
+    limit: "10 - 100,000 USD",
+    icon: "/kbank.svg",
+    recommended: true,
+  },
+  {
+    id: 2,
+    name: "Thai QR payments",
+    processingTime: "Instant - 30 minutes",
+    fee: " 0%",
+    limit: "10 - 500,000 USD",
+    icon: "/QRPAS.png",
+  },
+  {
+    id: 3,
+    name: "BinancePay",
+    processingTime: "Instant - 30 minutes",
+    fee: "0%",
+    limit: "10 - 20,000 USD",
+    icon: "/binance-logo.svg",
+  },
+  {
+    id: 4,
+    name: "Bitcoin (BTC)",
+    processingTime: "Instant - 1 Hours",
+    fee: " 0%",
+    limit: "10 - 200,000 USD",
+    icon: "/bitcoin.svg",
+  },
+];

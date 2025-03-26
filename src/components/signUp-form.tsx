@@ -101,9 +101,6 @@ export function SignUpForm({
       setSuccess("🎉 Your account has been created successfully!");
       setOpen(true);
 
-     
-
-    
 
 
       const res_verify = await fetch("http://localhost:3000/api/verify", {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -8,10 +9,7 @@ import {
   BreadcrumbList,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { MoveRight } from "lucide-react";
 import CryptoPrice from "@/components/table/CryptoPrice";
@@ -21,28 +19,41 @@ import { ChevronRight } from "lucide-react";
 import { useFetchSymbols } from "@/components/chartTradingView/SymbolChart/symbolFetch";
 import { useRouter } from "next/navigation";
 
-
 import MiniChartItem from "@/components/chartTradingView/SymbolChart/MinichartItem";
-import { resolveTradingViewSymbol}  from "@/lib/handleSymbolClick";
-
+import { resolveTradingViewSymbol } from "@/lib/handleSymbolClick";
+import DepositHistory from "@/components/table/DepositHistory";
 
 export default function Page() {
   const router = useRouter();
-  const { symbols, loading, error } = useFetchSymbols(4);
+  const { symbols, loading } = useFetchSymbols(4);
+  const [selectedType, setSelectedType] = useState<"crypto" | "stock" | null>(
+    null
+  );
+  const [selectedTradingViewSymbol, setSelectedTradingViewSymbol] = useState<
+    string | null
+  >(null);
 
+  useEffect(() => {
+    const savedSymbol = sessionStorage.getItem("selectedSymbol");
+    if (savedSymbol) {
+      const resolved = resolveTradingViewSymbol(savedSymbol);
+      if (resolved.tradingViewSymbol) {
+        setSelectedType(resolved.type as "crypto" | "stock");
+        setSelectedTradingViewSymbol(resolved.tradingViewSymbol);
+        console.log("🌐 Loaded from session:", resolved.tradingViewSymbol);
+      }
+    }
+  }, []);
 
   const handleMiniChartClick = (clickedSymbol: string) => {
     const result = resolveTradingViewSymbol(clickedSymbol);
-  
-    if (result.tradingViewSymbol) {
 
+    if (result.tradingViewSymbol) {
       console.log(`✅ ${result.type} matched: ${result.tradingViewSymbol}`);
     } else {
       console.warn("❌ Symbol not matched:", clickedSymbol);
     }
   };
-  
-
 
   return (
     <SidebarProvider>
@@ -74,33 +85,17 @@ export default function Page() {
             {loading ? (
               <p>Loading...</p>
             ) : symbols && symbols.length > 0 ? (
-
-             symbols.map((symbol) => (
-                           <MiniChartItem
-                             key={symbol}
-                             symbol={symbol}
-                             onClick={() => {
-                              handleMiniChartClick(symbol);
-                              router.push(`/chart?symbol=${encodeURIComponent(symbol)}`);
-                            }}
-                           />
-                         ))  
-=======
               symbols.map((symbol) => (
-                <div
+                <MiniChartItem
                   key={symbol}
-                  className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center cursor-pointer hover:shadow-lg hover:scale-[1.02] transition"
+                  symbol={symbol}
                   onClick={() => {
-                    console.log("clicked:", symbol);
+                    handleMiniChartClick(symbol);
                     router.push("/chart");
+                    sessionStorage.setItem("selectedSymbol", symbol);
                   }}
-                >
-                  <div className="pointer-events-none">
-                    <TradingViewMiniChart symbol={symbol} />
-                  </div>
-                </div>
+                />
               ))
-
             ) : (
               <p>No symbols available</p>
             )}
@@ -108,16 +103,12 @@ export default function Page() {
 
           <div className="flex flex-row">
             <div className="pl-3 text-[24px] font-semibold">ACTIVITY</div>
-            <div className="flex ml-auto items-center mr-10">
-              More Activity
-              <MoveRight className=" ml-4 mt-1"></MoveRight>
-            </div>
           </div>
           <div className="h-[320px] w-full rounded-xl bg-muted/50 ">
             <TransactionTable />
           </div>
           <div className="h-[210px] w-full mt-1 rounded-xl bg-muted/50">
-            <CryptoPrice />
+            <DepositHistory />
           </div>
         </div>
       </SidebarInset>

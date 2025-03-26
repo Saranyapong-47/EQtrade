@@ -23,6 +23,7 @@ import {
 
 import { doc, setDoc } from "firebase/firestore"; // ✅ เพิ่มการ import
 import { db } from "@/lib/firebase"; // ✅ Import 
+import { generateWalletNumber } from "@/utils/generateWalletNumber";
 
 const userAuthContext = createContext(null);
 
@@ -35,26 +36,36 @@ export function UserAuthContextProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
-  async function signUp(email, password, fullName) {
+  
+async function signUp(email, password, fullName) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        email: email,
-        uid: user.uid
+  
+      // ✅ 1. สร้าง walletNumber
+      const walletNumber = generateWalletNumber();
+  
+      // ✅ 2. สร้าง Wallet บน MongoDB
+      await fetch("/api/wallet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.uid,
+          walletNumber,
+        }),
       });
   
-
+      // ✅ 3. อัปเดตชื่อแสดงใน Firebase
       await updateProfile(user, { displayName: fullName });
-      return user; // ส่งคืน user หลังจากอัปเดตชื่อ
+  
+      return user;
+  
     } catch (error) {
-      console.error("Error signing up:", error);
+      if (error.code === "auth/email-already-in-use") {
+        throw new Error("📧 อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบหรือใช้อีเมลอื่น");
+      }
+  
+      console.error("❌ Sign-up error:", error);
       throw error;
     }
   }
