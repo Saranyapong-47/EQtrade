@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< HEAD
+=======
+import { Bar } from 'react-chartjs-2';
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Register the necessary components in Chart.js

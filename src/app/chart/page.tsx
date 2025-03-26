@@ -1,6 +1,10 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
+=======
+import { useState } from "react";
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -20,6 +24,7 @@ import { CryptoName } from "@/data/Crypto";
 import { SelectSymbolSwitcher } from "@/components/SelectSymbolSwitcher/SelectSymbolSwitcher";
 import MiniChartItem from "@/components/chartTradingView/SymbolChart/MinichartItem";
 import { resolveTradingViewSymbol } from "@/lib/handleSymbolClick";
+<<<<<<< HEAD
 
 export default function Page() {
   useEffect(() => {
@@ -40,6 +45,41 @@ export default function Page() {
   );
 
   const { symbols, loading } = useFetchSymbols(4);
+=======
+import { useSearchParams } from "next/navigation";
+
+export default function Page() {
+  const searchParams = useSearchParams();
+  const querySymbol = searchParams.get("symbol");
+
+  const resolved = resolveTradingViewSymbol(querySymbol || "");
+  const defaultSymbol =
+    resolved.tradingViewSymbol || CryptoName[0].tradingViewSymbol;
+  const defaultType = resolved.type || "crypto";
+
+import { SelectStock } from "@/components/SelectStock/SelectStock";
+import { SelectCrypto } from "@/components/SelectCrypto/selectCrypto";
+import { CryptoName } from "@/data/Crypto";
+import { SelectSymbolSwitcher } from "@/components/SelectSymbolSwitcher/SelectSymbolSwitcher";
+import { useRouter } from "next/navigation";
+
+export default function Page() {
+  const router = useRouter();
+  const { symbols, loading, error } = useFetchSymbols(4);
+  const [selectedTradingViewSymbol, setSelectedTradingViewSymbol] = useState(
+    CryptoName[0].tradingViewSymbol
+  ); // ✅ ใช้ TradingView Symbol
+
+
+  const [selectedTradingViewSymbol, setSelectedTradingViewSymbol] =
+    useState(defaultSymbol);
+  const [selectedType, setSelectedType] = useState<"crypto" | "stock">(
+    defaultType
+  );
+
+
+  const { symbols, loading, error } = useFetchSymbols(4);
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
 
   const handleMiniChartClick = (clickedSymbol: string) => {
     const result = resolveTradingViewSymbol(clickedSymbol);
@@ -53,10 +93,20 @@ export default function Page() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  console.log("🔄 Selected TradingView Symbol:", selectedTradingViewSymbol);
+  console.log("🔄 Mapped Binance Symbol:", selectedBinanceSymbol);
+
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="ml-0">
+<<<<<<< HEAD
+=======
+
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
         <header className="flex h-10 items-center gap-2 px-4 mt-6">
           <ChevronRight strokeWidth={1} className="opacity-75" />
           <Separator orientation="vertical" className="mr-2 h-5" />
@@ -75,6 +125,31 @@ export default function Page() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+<<<<<<< HEAD
+=======
+
+        <header className="flex h-10  shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4 mt-6">
+            <ChevronRight strokeWidth={1} className="opacity-75" />
+            {/*<SidebarTrigger className="-ml-1" />*/}
+            <Separator orientation="vertical" className="mr-2 h-5" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:flex items-center gap-2">
+                  <BreadcrumbLink href="/chart">Chart</BreadcrumbLink>
+                  <div className="ml-10 text-black font-semibold text-[16px]">
+                    <SelectSymbolSwitcher
+                      onChange={(symbol) =>
+                        setSelectedTradingViewSymbol(symbol)
+                      }
+                    />
+                  </div>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
         </header>
 
         <div className="flex gap-4 p-4 mx-8">
@@ -94,9 +169,28 @@ export default function Page() {
             symbols.map((symbol) => (
               <MiniChartItem
                 key={symbol}
+<<<<<<< HEAD
                 symbol={symbol}
                 onClick={handleMiniChartClick}
               />
+=======
+
+                symbol={symbol}
+                onClick={handleMiniChartClick}
+              />
+
+                className="h-[200px] w-full rounded-xl bg-muted/75 items-center justify-center cursor-pointer hover:shadow-lg hover:scale-[1.02] transition"
+                onClick={() => {
+                  console.log("clicked:", symbol);
+                  router.push("/chart");
+                }}
+              >
+                <div className="pointer-events-none">
+                  <TradingViewMiniChart symbol={symbol} />
+                </div>
+              </div>
+
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
             ))
           ) : (
             <p>No symbols available</p>

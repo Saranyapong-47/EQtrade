@@ -12,10 +12,53 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { ChevronRight } from "lucide-react";
+<<<<<<< HEAD
 import { Card } from "@/components/ui/card";
 
 import { useRouter } from "next/navigation";
 import { depositMethods } from "@/data/Deposit";
+=======
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { RotateCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+
+const depositMethods = [
+  {
+    id: 1,
+    name: "Thai QR payments",
+    processingTime: "Instant - 30 minutes",
+    fee: " 0%",
+    limit: "10 - 500,000 USD",
+    icon: "/QRPAS.png",
+    recommended: true,
+  },
+  {
+    id: 2,
+    name: "Bank Transfer",
+    processingTime: "Instant - 1 minutes",
+    fee: " 0%",
+    limit: "10 - 100,000 USD",
+    icon: "/kbank.svg",
+  },
+  {
+    id: 3,
+    name: "BinancePay",
+    processingTime: "Instant - 30 minutes",
+    fee: "0%",
+    limit: "10 - 20,000 USD",
+    icon: "/binance-logo.svg",
+  },
+  {
+    id: 4,
+    name: "Bitcoin (BTC)",
+    processingTime: "Instant - 1 Hours",
+    fee: " 0%",
+    limit: "10 - 200,000 USD",
+    icon: "/bitcoin.svg",
+  },
+];
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
 
 export default function DepositOptions() {
   const router = useRouter();
@@ -48,10 +91,17 @@ export default function DepositOptions() {
             {depositMethods.map((method) => (
               <Card
                 key={method.id}
+<<<<<<< HEAD
                 className=" p-6 w-full rounded-2xl flex justify-between items-center gap-4 text-black shadow-sm border border-gray-200 hover:shadow-md hover:bg-gray-100 transition-all text-left bg-white cursor-pointer"
                 onClick={() => {
                   if (method.name === "Bank Transfer") {
                     router.push("/finance/BankTranfer");
+=======
+                className="p-6 w-full rounded-2xl flex justify-between items-center gap-4 text-black shadow-sm border border-gray-200 hover:shadow-md hover:bg-gray-100 transition-all text-left bg-white cursor-pointer"
+                onClick={() => {
+                  if (method.name === "Thai QR payments") {
+                    router.push("/finance/THpayment");
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
                   }
                 }}
               >

@@ -23,7 +23,10 @@ import {
 
 import { doc, setDoc } from "firebase/firestore"; // ✅ เพิ่มการ import
 import { db } from "@/lib/firebase"; // ✅ Import 
+<<<<<<< HEAD
 import { generateWalletNumber } from "@/utils/generateWalletNumber";
+=======
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
 
 const userAuthContext = createContext(null);
 
@@ -36,6 +39,7 @@ export function UserAuthContextProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password);
   }
 
+<<<<<<< HEAD
   
 async function signUp(email, password, fullName) {
     try {
@@ -66,6 +70,28 @@ async function signUp(email, password, fullName) {
       }
   
       console.error("❌ Sign-up error:", error);
+=======
+  async function signUp(email, password, fullName) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        email: email,
+        uid: user.uid
+      });
+  
+
+      await updateProfile(user, { displayName: fullName });
+      return user; // ส่งคืน user หลังจากอัปเดตชื่อ
+    } catch (error) {
+      console.error("Error signing up:", error);
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
       throw error;
     }
   }

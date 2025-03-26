@@ -15,7 +15,11 @@ export function useBinanceTradePrice(symbol) {
 
     wsRef.current.onmessage = (event) => {
       const data = JSON.parse(event.data);
+<<<<<<< HEAD
       setPrice(parseFloat(data.p).toFixed(4));
+=======
+      setPrice(parseFloat(data.p).toFixed(2));
+>>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
     };
 
     return () => {
