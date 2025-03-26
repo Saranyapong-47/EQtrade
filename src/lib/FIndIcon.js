@@ -2,10 +2,6 @@ import { CryptoName } from "@/data/Crypto";
 import { StockName } from "@/data/Stock";
 
 export function FindIcon(symbol) {
-<<<<<<< HEAD
-=======
-
->>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
   const normalized = symbol.toUpperCase().replace("BINANCE:", "");
 
   const crypto = CryptoName.find((c) =>
@@ -27,27 +23,5 @@ export function FindIcon(symbol) {
   return {
     name: "Unknown Asset",
     icon: "/Bitcoin.svg", // fallback
-<<<<<<< HEAD
-=======
-
-  const crypto = CryptoName.find(
-    (c) =>
-      c.tradingViewSymbol === symbol ||
-      c.binanceSymbol === symbol ||
-      c.value.toUpperCase() === symbol.toUpperCase()
-  );
-
-  const stock = StockName.find(
-    (s) =>
-      s.tradingViewSymbol === symbol ||
-      s.binanceSymbol === symbol ||
-      s.value.toUpperCase() === symbol.toUpperCase()
-  );
-
-  return {
-    name: (crypto && crypto.name) || (stock && stock.name) || null,
-    icon: (crypto && crypto.icon) || (stock && stock.icon) || "/Bitcoin.svg",
-
->>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
   };
 }

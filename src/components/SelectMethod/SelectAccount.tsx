@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-<<<<<<< HEAD
 import { useWallet } from "@/hooks/useWallet";
 
 
@@ -28,21 +27,6 @@ export function SelectAccount() {
 
   return (
     <Select defaultValue={accountMethods[0]?.value}>
-=======
-
-const accountMethods = [
-  {
-    id: 1,
-    name: "123-163-4815",
-    value: "Acc",
-    icon: "/BankAccount1.svg",
-  },
-];
-
-export function SelectAccount() {
-  return (
-    <Select defaultValue={accountMethods[0].value}>
->>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
       <SelectTrigger className="w-[250px] flex items-center">
         <SelectValue placeholder="Select Account"></SelectValue>
       </SelectTrigger>

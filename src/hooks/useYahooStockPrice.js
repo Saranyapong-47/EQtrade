@@ -12,12 +12,8 @@ export function useYahooStockPrice(symbol) {
         const data = await res.json();
 
         if (data.price) {
-<<<<<<< HEAD
           setPrice(parseFloat(data.price).toFixed(4));
           //setPrice(data.price);
-=======
-          setPrice(data.price);
->>>>>>> 88436427f88b9f85e98852b1047a5df137fa681f
         } else {
           console.warn("No price in response:", data);
           setPrice(null);
