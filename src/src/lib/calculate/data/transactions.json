@@ -1,5 +1,0 @@
-[
-    { "type": "buy", "price": 1861, "quantity": 1 },
-    { "type": "buy", "price": 1862, "quantity": 0.5 },
-    { "type": "sell", "price": 1000, "quantity": 1 }
-]

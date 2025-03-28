@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { MoveRight } from "lucide-react";
-import CryptoPrice from "@/components/table/CryptoPrice";
+import CryptoPrice from "@/components//table/CryptoPrice";
 import TransactionTable from "@/components/table/TransactionTable";
 import { ChevronRight } from "lucide-react";
 

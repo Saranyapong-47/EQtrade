@@ -8,7 +8,9 @@ export function useYahooStockPrice(symbol) {
 
     const fetchPrice = async () => {
       try {
-        const res = await fetch(`/api/yahoo?symbol=${encodeURIComponent(symbol)}`);
+        const res = await fetch(
+          `/api/yahoo?symbol=${encodeURIComponent(symbol)}`
+        );
         const data = await res.json();
 
         if (data.price) {

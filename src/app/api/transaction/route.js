@@ -2,11 +2,13 @@
 import { NextResponse } from "next/server"; // ✅ เพิ่มบรรทัดนี้
 import { connectMongoDB } from "@/lib/mongodb";
 import Transaction from "@/models/Transaction"; 
+import { updatePortfolio } from "@/lib/updatePortfolio";
 
 export async function GET(req) {
   await connectMongoDB();
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
+  
 
   if (!userId) {
     return NextResponse.json({ error: "Missing userId" }, { status: 400 });
@@ -70,6 +72,19 @@ export async function POST(req) {
       total : price * quantity,
       assetType,
       status: "completed",
+    });
+
+    const category = assetType.toLowerCase() === 'crypto' ? 'Crypto' : 'Stock';
+
+
+     // ✅ อัปเดต portfolio
+     await updatePortfolio({
+      userId,
+      symbol,
+      category, // ต้องเป็น 'Stock' หรือ 'Crypto'
+      price,
+      quantity,
+      type,
     });
 
     console.log("New transaction:", newTransaction);

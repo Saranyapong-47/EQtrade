@@ -1,10 +1,15 @@
-import mongoose from "mongoose";
+// models/Portfolio.ts
+import mongoose from 'mongoose';
 
 const AssetSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  amount: { type: Number, required: true },
-  icon: { type: String, required: true },
-  currency: { type: String, required: true },
+  userId: { type: String, required: true },
+  symbol: { type: String, required: true },
+  category: { type: String, enum: ['Stock', 'Crypto'], required: true },
+  quantity: { type: Number, required: true },
+  averageBuyPrice: { type: Number, required: true },
+  updatedAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.models.Asset || mongoose.model("Asset", AssetSchema);
+const Asset = mongoose.models.Asset || mongoose.model('Asset', AssetSchema);
+
+export default Asset;

@@ -1,38 +1,19 @@
-import { connectMongoDB } from "@lib/mongodb";
-import Asset from "@models/asset";
+// /api/portfolio.ts
+import { connectMongoDB } from '@/lib/mongodb';
+import Asset from '@/models/asset';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-export async function GET(req) {
-  try {
-    await connectMongoDB();
-    const assets = await Asset.find({});
-    return new Response(JSON.stringify(assets), { status: 200 });
-  } catch (error) {
-    console.error("Error fetching assets:", error);
-    return new Response(JSON.stringify({ message: "Error fetching assets" }), { status: 500 });
-  }
-}
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  await dbConnect();
 
-export async function POST(req) {
-  try {
-    await connectMongoDB();
-    const { name, amount } = await req.json();
+  const { method } = req;
 
-    if (!name || !amount) {
-      return new Response(JSON.stringify({ message: "Invalid data" }), { status: 400 });
-    }
+  if (method === 'GET') {
+    const { userId } = req.query;
+    if (!userId) return res.status(400).json({ message: 'Missing userId' });
 
-    let asset = await Asset.findOne({ name });
-    if (!asset) {
-      asset = new Asset({ name, amount, icon: "/default-icon.svg", currency: "THB" });
-      await asset.save();
-    } else {
-      asset.amount += amount; // Ensure this line updates the amount
-      await asset.save();
-    }
+    const portfolio = await Portfolio.find({ userId });
 
-    return new Response(JSON.stringify({ message: "Asset updated successfully" }), { status: 200 });
-  } catch (error) {
-    console.error("Error updating asset:", error);
-    return new Response(JSON.stringify({ message: "Error updating asset" }), { status: 500 });
+    return res.status(200).json(portfolio);
   }
 }

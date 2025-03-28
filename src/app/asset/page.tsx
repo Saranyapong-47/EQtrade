@@ -1,5 +1,5 @@
 "use client";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,12 +13,16 @@ import { ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import  WalletCard  from "@/components/ui/Wallet";
+import WalletCard from "@/components/ui/Wallet";
 import ThailandTime from "@/components/Time/RealTime";
 import { useWallet } from "@/hooks/useWallet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { usePortfolio } from "@/hooks/usePortfolio";
+import { StockName } from "@/data/Stock";
+import { CryptoName } from "@/data/Crypto";
+import { AssetRow } from "@/components/ui/AssetRow";
+
 
 interface Asset {
   id: number;
@@ -30,12 +34,28 @@ interface Asset {
 export default function Page() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const userId = useCurrentUser();
+  const { portfolio, loading } = usePortfolio(userId);
 
-  const fetchAssetsData = async () => {
+  const AllAssetMeta = [...StockName, ...CryptoName];
+
+  const cryptoAssets = portfolio.filter((item) => item.category === "Crypto");
+  const stockAssets = portfolio.filter((item) => item.category === "Stock");
+
+  // เพิ่มประเภทให้กับ `portfolio` หากไม่ได้ระบุ
+  interface PortfolioItem {
+    category: string;
+    // other properties...
+  }
+
+  const findAssetMeta = (symbol: string) => {
+    return AllAssetMeta.find((item) => item.tradingViewSymbol === symbol);
+  };
+
+  const fetchAssetsData = useCallback(async () => {
     if (!userId) return;
 
     try {
-      const res = await fetch(`/api/portfolio/assets?userId=${userId}`);
+      const res = await fetch(`/api/portfolio?userId=${userId}`);
       const data = await res.json();
 
       if (res.ok) {
@@ -46,11 +66,11 @@ export default function Page() {
     } catch (error) {
       console.error("Network error:", error);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     fetchAssetsData();
-  }, [userId]);
+  }, [fetchAssetsData]); // ใช้ fetchAssetsData ใน dependency array
 
   const { wallet } = useWallet();
   useEffect(() => {
@@ -59,6 +79,28 @@ export default function Page() {
 
   const handleRefresh = () => {
     fetchAssetsData();
+  };
+
+  const AssetCard = ({ asset }: { asset: Asset }) => {
+    return (
+      <Card className="flex flex-col items-start justify-between p-4 border rounded-lg shadow-md hover:shadow-xl transition-all w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+        <div className="flex items-center gap-4 mb-4">
+          {/* โลโก้ */}
+          <Image src={asset.logoUrl} alt={asset.name} width={40} height={40} />
+          {/* ชื่อและข้อมูลสินทรัพย์ */}
+          <div className="text-left">
+            <p className="text-lg font-semibold truncate">{asset.name}</p>
+            <p className="text-sm text-gray-500">{asset.symbol}</p>
+          </div>
+        </div>
+        
+        <div className="flex flex-col items-start">
+          {/* จำนวนสินทรัพย์ */}
+          <p className="text-2xl font-bold">{asset.quantity}</p>
+          <p className="text-sm text-gray-400">Units</p>
+        </div>
+      </Card>
+    );
   };
 
   return (
@@ -83,15 +125,14 @@ export default function Page() {
           <div className="font-bold text-[40px] mb-2">Total Assets</div>
           <main className="flex flex-col gap-4 p-6">
             {/* รวมสินทรัพย์ทั้งหมด */}
-            <Card className="w-full h-[90px] bg-white p-4 rounded-lg text-black flex justify-between items-center">
+            <Card className="w-full h-[90px] bg-white p-4 rounded-lg text-black flex justify-between items-center shadow-md">
               <div>
-                <h2 className="text-lg font-semibold">My Assests</h2>
+                <h2 className="text-lg font-semibold">My Assets</h2>
 
                 <div className="flex items-center gap-2 text-gray-400">
-                  {/* <p className="text-sm">{lastUpdated}</p>*/}
                   <ThailandTime />
                   <Button
-                  onClick={handleRefresh}
+                    onClick={handleRefresh}
                     variant="ghost"
                     size="icon"
                     className="rounded-full w-6 h-6 flex items-center justify-center"
@@ -101,8 +142,6 @@ export default function Page() {
                       className="text-gray-400 hover:text-white transition"
                     />
                   </Button>
-
-                  <p></p>
                 </div>
               </div>
 
@@ -115,10 +154,10 @@ export default function Page() {
             </Card>
 
             <div>
-              <div className="font-bold text-[24px]">My Account</div>
+              <div className="font-bold text-[24px] mb-4">My Account</div>
 
               <div className="flex flex-wrap gap-4">
-                <div className=" w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
+                <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5">
                   <WalletCard />
                 </div>
               </div>
@@ -126,33 +165,23 @@ export default function Page() {
 
             <Button
               variant="outline"
-              className="inline-flex items-center justify-center my-3 rounded-full border-spacing-1.5 border-black text-black px-4 py-1 text-sm font-semibold w-fit hover:bg-black/10 transition-all"
+              className="inline-flex items-center justify-center mt-3 rounded-full border-spacing-1.5 border-black text-black px-4 py-1 text-sm font-semibold w-fit hover:bg-black/10 transition-all"
             >
               Asset Types
             </Button>
 
             {/* รายการสินทรัพย์ */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {assets.map((asset) => (
-                <Card
-                  key={asset.id}
-                  className="flex justify-between items-center h-20  p-4 rounded-2xltext-black shadow-sm border border-gray-200 hover:shadow-md hover:bg-gray-100 transition-all text-left bg-white"
-                >
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={asset.icon}
-                      alt={asset.name}
-                      width={36}
-                      height={36}
-                    />
-                    <span className="font-semibold">{asset.name}</span>
-                  </div>
-                  <p className="text-xl font-bold text-right">
-                    {asset.amount.toLocaleString()}{" "}
-                    <span className="text-gray-400 text-[16px]">THB</span>
-                  </p>
-                </Card>
-              ))}
+            <section>
+              {loading ? (
+                <p>Loading assets...</p>
+              ) : portfolio.length === 0 ? (
+                <p className="text-gray-400">No Assets</p>
+              ) : (
+                <>
+                  <AssetRow title="Crypto" items={cryptoAssets} />
+                  <AssetRow title="Stock" items={stockAssets} />
+                </>
+              )}
             </section>
           </main>
         </div>

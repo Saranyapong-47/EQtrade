@@ -17,4 +17,3 @@ export const connectMongoDB = async () => {
   }
 };
 
-connectMongoDB(); // เรียกใช้งานเมื่อโปรแกรมเริ่มทำงาน
