@@ -14,7 +14,6 @@ interface AssetRowProps {
 }
 
 export const AssetRow = ({ title, items }: AssetRowProps) => {
-  
   return (
     <>
       <p className="font-bold text-xl mt-6 mb-2">{title}</p>

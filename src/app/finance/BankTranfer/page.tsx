@@ -34,6 +34,7 @@ export default function DepositOptions() {
   const { wallet, refetchWallet } = useWallet();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [method] = useState("Bank Transfer");
 
 
   
@@ -81,6 +82,7 @@ export default function DepositOptions() {
         body: JSON.stringify({
           userId,
           amount: Number(amount),
+          method,
         }),
       });
   

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { ArrowDownCircle } from "lucide-react";
 
 interface Deposit {
   amount: number;
@@ -43,7 +44,7 @@ export default function DepositHistory() {
               .map((item, i) => (
                 <tr key={i} className=" hover:bg-gray-50 transition">
                   <td className="px-6 py-4 flex items-center gap-3">
-                    
+                  <ArrowDownCircle className="text-green-500" />
                     <span className="font-medium text-sm">Deposit</span>
                   </td>
                   <td className="px-6 py-4 capitalize">{item.method}</td>

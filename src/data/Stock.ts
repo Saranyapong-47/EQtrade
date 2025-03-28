@@ -17,7 +17,7 @@ export const StockName = [
     },
     {
       id: 3,
-      name: "NVIDIA Corporation (NVDA)",
+      name: "NVIDIA Corp. (NVDA)",
       value: "nvda",
       tradingViewSymbol: "NASDAQ:NVDA",
       binanceSymbol: "NVDA",
@@ -33,7 +33,7 @@ export const StockName = [
     },
     {
       id: 5,
-      name: "Microsoft Corporation (MSFT)",
+      name: "Microsoft Corp. (MSFT)",
       value: "msft",
       tradingViewSymbol: "NASDAQ:MSFT",
       binanceSymbol: "MSFT",

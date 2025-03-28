@@ -12,7 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 import { MoveRight } from "lucide-react";
-import CryptoPrice from "@/components//table/CryptoPrice";
 import TransactionTable from "@/components/table/TransactionTable";
 import { ChevronRight } from "lucide-react";
 
@@ -75,13 +74,9 @@ export default function Page() {
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div className="flex flex-row">
             <div className="pl-3 text-[24px] font-semibold">ASSETS</div>
-            <div className="flex ml-auto items-center mr-10">
-              More Assets
-              <MoveRight className=" ml-4 mt-1"></MoveRight>
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pl-2">
             {loading ? (
               <p>Loading...</p>
             ) : symbols && symbols.length > 0 ? (
@@ -104,8 +99,11 @@ export default function Page() {
           <div className="flex flex-row">
             <div className="pl-3 text-[24px] font-semibold">ACTIVITY</div>
           </div>
-          <div className="h-[320px] w-full rounded-xl bg-muted/50 ">
+          <div className="h-[320px] w-full rounded-xl bg-muted/50">
             <TransactionTable />
+          </div>
+          <div className="flex flex-row">
+            <div className="pl-3 text-[24px] font-semibold">FINANCE HISTORY</div>
           </div>
           <div className="h-[210px] w-full mt-1 rounded-xl bg-muted/50">
             <DepositHistory />

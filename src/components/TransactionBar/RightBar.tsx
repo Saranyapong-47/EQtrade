@@ -20,7 +20,7 @@ import { useWalletStore } from "@/store/walletStore";
 
 
 interface RightBarProps {
-  symbol: string; // TradingView Symbol เช่น "BINANCE:BTCUSDT" หรือ "NASDAQ:AAPL"
+  symbol: string;
 }
 
 export default function RightBar({ symbol }: RightBarProps) {
@@ -63,6 +63,8 @@ export default function RightBar({ symbol }: RightBarProps) {
   const cryptoPrice = useBinanceTradePrice(binanceSymbol);
   const stockPrice = useYahooStockPrice(symbol);
 
+  const { wallet } = useWalletStore();
+
   useEffect(() => {
     console.log("📥 [YahooHook] symbol received:", symbol);
     // ...
@@ -75,10 +77,17 @@ export default function RightBar({ symbol }: RightBarProps) {
     setCryptoIcon(result.icon);
   }, [symbol]);
 
+
+
+
   const handleQuickAmount = (percent: number) => {
-    const balance = 50000;
+    if (!wallet) return;
+    const balance = wallet.balance;
     setAmount(parseFloat(((balance * percent) / 100).toFixed(2)));
   };
+
+
+
 
   const handleTransactionSubmit = async () => {
     const price = isCrypto ? cryptoPrice : stockPrice;
@@ -94,12 +103,12 @@ export default function RightBar({ symbol }: RightBarProps) {
     });
 
     if (!userId) {
-      alert("⛔ กรุณาเข้าสู่ระบบก่อนทำรายการ");
+      alert("⛔ Please login first");
       return;
     }
 
     if (!price || !quantity) {
-      alert("⛔ กรุณาใส่จำนวน และตรวจสอบราคาล่าสุด");
+      alert("⛔ Please enter a valid amount and price");
       return;
     }
 
@@ -107,11 +116,11 @@ export default function RightBar({ symbol }: RightBarProps) {
     let calculatedTotal = 0;
 
     if (currency === "Shares") {
-      calculatedQuantity = Number(amount); // ซื้อ x หน่วย
+      calculatedQuantity = Number(amount);
       calculatedTotal = price * calculatedQuantity;
     } else if (currency === "USD") {
       calculatedQuantity = Number(amount) / price;
-      calculatedTotal = Number(amount); // สมมติว่า THB = USD เพื่อความง่าย (หรือคุณจะคูณ rate ก็ได้)
+      calculatedTotal = Number(amount);
     }
 
     const fee = (calculatedTotal * 0.2) / 100;
@@ -156,7 +165,7 @@ export default function RightBar({ symbol }: RightBarProps) {
     <div>
       <CardHeader>
         <CardTitle className="text-2xl text-left font-bold">
-          <p className="mb-1">{cryptoName}</p>
+          <p className="mb-1 truncate">{cryptoName}</p>
           {isCrypto
             ? binanceSymbol && cryptoPrice
               ? `$${cryptoPrice}`
@@ -214,7 +223,7 @@ export default function RightBar({ symbol }: RightBarProps) {
             </div>
           </div>
 
-          <div className="flex gap-2 mt-4">
+          <div className="flex  gap-2 mt-4 mx-2">
             {[25, 50, 75, 100].map((percent) => (
               <Button
                 key={percent}

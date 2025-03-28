@@ -80,7 +80,7 @@ export default function TransactionTable() {
                     <span className="capitalize">{tx.type}</span>
                   </td>
 
-                  <td className="px-6 py-4">{tx.quantity}</td>
+                  <td className="px-6 py-4">{tx.quantity.toFixed(2)}</td>
                   <td className="px-6 py-4">${tx.total.toFixed(2)}</td>
                   <td
                     className={`px-6 py-4 ${

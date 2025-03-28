@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"; // ✅ เพิ่มบรรท�
 import { connectMongoDB } from "@/lib/mongodb";
 import Transaction from "@/models/Transaction"; 
 import { updatePortfolio } from "@/lib/updatePortfolio";
+import Asset from "@/models/asset";
 
 export async function GET(req) {
   await connectMongoDB();
