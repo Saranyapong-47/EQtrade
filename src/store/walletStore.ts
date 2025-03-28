@@ -1,8 +1,13 @@
 import { create } from "zustand";
 
+interface Asset {
+  symbol: string;
+  quantity: number;
+}
 interface Wallet {
   balance: number;
   walletNumber: string;
+  assets: Asset[]; 
 }
 
 interface WalletStore {
@@ -22,7 +27,14 @@ export const useWalletStore = create<WalletStore>((set) => ({
       const data = await res.json();
 
       if (res.ok) {
-        set({ wallet: { balance: data.balance, walletNumber: data.walletNumber } });
+        // เพิ่มข้อมูล assets ใน wallet
+        set({
+          wallet: {
+            balance: data.balance,
+            walletNumber: data.walletNumber,
+            assets: data.assets || [], // หากไม่พบข้อมูล assets ให้ใช้ array ว่าง
+          },
+        });
       } else {
         console.warn("⚠️ Failed to refetch wallet:", data.error);
       }

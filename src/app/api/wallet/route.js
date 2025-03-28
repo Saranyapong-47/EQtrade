@@ -29,6 +29,21 @@ export async function POST(req) {
   const body = await req.json();
   const { userId, walletNumber } = body;
 
+  const transactionData = {
+    userId,
+    symbol,
+    type: transactionType,
+    quantity: calculatedQuantity,
+    price,
+    assetType: isCrypto ? "crypto" : "stock",
+    amount: totalWithFee,
+  };
+  
+  console.log("Transaction data:", transactionData); // เพิ่มการพิมพ์ข้อมูลเพื่อดูว่ามีการส่งข้อมูลครบถ้วนหรือไม่
+  
+  // ส่งข้อมูลไปยัง API
+  
+
   console.log("📥 POST /api/wallet with:", body);
 
   if (!userId || !walletNumber) {
@@ -56,7 +71,7 @@ export async function POST(req) {
 export async function PATCH(req) {
   await connectMongoDB();
   const body = await req.json();
-  const { userId, amount, action } = body;
+  const { userId, amount, action, symbol, quantity } = body;
 
   console.log("🔧 PATCH /api/wallet with:", body);
 
@@ -69,6 +84,30 @@ export async function PATCH(req) {
     return NextResponse.json({ error: "Wallet not found" }, { status: 404 });
   }
 
+  // ตรวจสอบ action "remove" เพื่อทำการลบสินทรัพย์
+  if (action === "remove") {
+    const assetIndex = wallet.assets.findIndex((asset) => asset.symbol === symbol);
+    
+    if (assetIndex > -1) {
+      // ลดจำนวนสินทรัพย์ใน wallet
+      const asset = wallet.assets[assetIndex];
+
+      if (asset.quantity < quantity) {
+        return NextResponse.json({ error: "Insufficient asset quantity" }, { status: 400 });
+      }
+
+      // ถ้าจำนวนสินทรัพย์ถูกขายหมด ให้ลบออกจาก assets
+      if (asset.quantity === quantity) {
+        wallet.assets.splice(assetIndex, 1); // ลบสินทรัพย์
+      } else {
+        // ถ้าขายบางส่วน ลดจำนวน
+        asset.quantity -= quantity;
+      }
+    } else {
+      return NextResponse.json({ error: "Asset not found in wallet" }, { status: 404 });
+    }
+  }
+
   if (action === "add") {
     wallet.balance += amount;
   } else if (action === "subtract") {
@@ -78,9 +117,9 @@ export async function PATCH(req) {
     }
     wallet.balance -= amount;
   }
-  
 
   await wallet.save();
   console.log("💾 Wallet updated:", wallet);
   return NextResponse.json(wallet);
 }
+

@@ -15,7 +15,6 @@ import { FindIcon } from "@/lib/FindIcon";
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { useWallet } from "@/hooks/useWallet";
 import { useWalletStore } from "@/store/walletStore";
 
 
@@ -81,14 +80,59 @@ export default function RightBar({ symbol }: RightBarProps) {
 
 
   const handleQuickAmount = (percent: number) => {
-    if (!wallet) return;
+    if (!wallet) {
+      console.error("Wallet not found!");
+      return;
+    }
+  
     const balance = wallet.balance;
-    setAmount(parseFloat(((balance * percent) / 100).toFixed(2)));
+  
+    
+    if (transactionType === "buy") {
+      
+      if (balance <= 0) {
+        console.error("Insufficient balance!");
+        return;
+      }
+  
+     
+      const amountToInvest = (balance * percent) / 100;
+      
+      if (amountToInvest <= 0) {
+        console.error("Amount to invest is too low!");
+        return;
+      }
+  
+      setAmount(parseFloat(amountToInvest.toFixed(2)));
+    }
+  
+ 
+    if (transactionType === "sell") {
+      
+      const userAssets = wallet.assets?.find((asset) => asset.symbol === symbol);
+  
+
+      const assetQuantity = userAssets?.quantity || 0;
+  
+      if (assetQuantity <= 0) {
+        console.error("No assets available to sell!");
+        return;
+      }
+  
+      
+      const amountToSell = (assetQuantity * percent) / 100;
+  
+      if (amountToSell <= 0) {
+        console.error("Amount to sell is too low!");
+        return;
+      }
+  
+      setAmount(parseFloat(amountToSell.toFixed(2)));
+    }
   };
 
 
-
-
+  
   const handleTransactionSubmit = async () => {
     const price = isCrypto ? cryptoPrice : stockPrice;
     const quantity = Number(amount);

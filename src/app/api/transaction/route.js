@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"; // ✅ เพิ่มบรรท�
 import { connectMongoDB } from "@/lib/mongodb";
 import Transaction from "@/models/Transaction"; 
 import { updatePortfolio } from "@/lib/updatePortfolio";
-import Asset from "@/models/asset";
+
 
 export async function GET(req) {
   await connectMongoDB();
@@ -51,7 +51,7 @@ export async function POST(req) {
       }
     }
 
-    // ✅ เพิ่มเงินถ้าเป็น "sell"
+    // ✅ เพิ่มเงินถ้าเป็น "sell" และลบสินทรัพย์ที่ขายไป
     if (type === "sell") {
       await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/wallet`, {
         method: "PATCH",
@@ -62,6 +62,24 @@ export async function POST(req) {
           action: "add",
         }),
       });
+
+      // ลบสินทรัพย์ที่ถูกขายออกจากกระเป๋าเงิน
+      const walletRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/wallet`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          symbol,
+          quantity,
+          action: "remove", // action ใหม่ที่ใช้ลบสินทรัพย์
+        }),
+      });
+
+      const walletResult = await walletRes.json();
+
+      if (!walletRes.ok) {
+        return NextResponse.json({ error: walletResult.error }, { status: walletRes.status });
+      }
     }
 
     const newTransaction = await Transaction.create({
@@ -70,16 +88,15 @@ export async function POST(req) {
       type,
       quantity,
       price,
-      total : price * quantity,
+      total: price * quantity,
       assetType,
       status: "completed",
     });
 
     const category = assetType.toLowerCase() === 'crypto' ? 'Crypto' : 'Stock';
 
-
-     // ✅ อัปเดต portfolio
-     await updatePortfolio({
+    // ✅ อัปเดต portfolio
+    await updatePortfolio({
       userId,
       symbol,
       category, // ต้องเป็น 'Stock' หรือ 'Crypto'
